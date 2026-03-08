@@ -13,7 +13,7 @@ const testimonials = [
     name: "Nadia & Rafiq",
     university: "BUET",
     quote: "The guardian approval feature made everything so smooth. Both families were involved from day one.",
-    emoji: "💍",
+    icon: Gem,
     rating: 5,
   },
   {
