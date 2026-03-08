@@ -155,7 +155,14 @@ const ProfileEdit = () => {
         </div>
       
       <div className="relative">
-        <div className="container mx-auto px-4 max-w-3xl">
+        {/* Subtle Islamic background decorations */}
+        <div className="absolute inset-0 islamic-arabesque opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 islamic-mosque-bg pointer-events-none" />
+        <div className="absolute top-20 left-0 w-64 h-64 rounded-full bg-primary/[0.03] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-secondary/[0.04] blur-3xl pointer-events-none" />
+        <div className="absolute bottom-40 left-10 w-48 h-48 rounded-full bg-teal/[0.03] blur-3xl pointer-events-none" />
+        
+        <div className="container mx-auto px-4 max-w-3xl relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
