@@ -41,11 +41,13 @@ const ProfileEdit = () => {
     religion: "Islam",
     lookingFor: "Someone kind, educated, and family-oriented",
     bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
+    college: "",
     guardianName: "Mr. Ahmed Hossain",
     guardianEmail: "guardian@example.com",
     guardianPhone: "+880171XXXXXXX",
     guardianRelation: "Father",
   });
+  const [showCollege, setShowCollege] = useState(false);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([
     "Technology", "Cricket", "Photography", "Hiking"
@@ -226,6 +228,35 @@ const ProfileEdit = () => {
                       </Select>
                     </div>
                   </div>
+                  {!showCollege ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-fit gap-2"
+                      onClick={() => setShowCollege(true)}
+                    >
+                      <Plus className="w-4 h-4" /> Add College
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>College</Label>
+                        <button
+                          type="button"
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          onClick={() => { setShowCollege(false); setFormData({...formData, college: ""}); }}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <Input
+                        value={formData.college}
+                        onChange={e => setFormData({...formData, college: e.target.value})}
+                        placeholder="Enter your college name"
+                      />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
