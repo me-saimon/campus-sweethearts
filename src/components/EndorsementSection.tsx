@@ -13,7 +13,46 @@ interface EndorsementSectionProps {
   profileName: string;
   profileUniversity: string;
   profileDepartment: string;
+  profileYear: string;
 }
+
+type EligibilityMatch = {
+  eligible: boolean;
+  relationship: Endorsement["relationship"] | null;
+  matchDetails: string[];
+};
+
+const getEligibility = (
+  university: string,
+  department: string,
+  year: string,
+  profileUniversity: string,
+  profileDepartment: string,
+  profileYear: string
+): EligibilityMatch => {
+  const uniMatch = university.trim().toLowerCase() === profileUniversity.toLowerCase();
+  const deptMatch = department.trim().toLowerCase() === profileDepartment.toLowerCase();
+  const yearMatch = year.trim().toLowerCase() === profileYear.toLowerCase();
+
+  if (!uniMatch) return { eligible: false, relationship: null, matchDetails: ["University doesn't match"] };
+
+  const matches: string[] = [];
+  let relationship: Endorsement["relationship"] = "university_peer";
+
+  if (uniMatch) matches.push("Same university");
+  if (deptMatch && yearMatch) {
+    relationship = "classmate";
+    matches.push("Same department", "Same batch");
+  } else if (yearMatch) {
+    relationship = "batchmate";
+    matches.push("Same batch");
+  } else if (deptMatch) {
+    relationship = "department_peer";
+    matches.push("Same department");
+  }
+
+  return { eligible: true, relationship, matchDetails: matches };
+};
 
 const relationshipLabels: Record<Endorsement["relationship"], string> = {
   classmate: "Classmate",
