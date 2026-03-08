@@ -168,10 +168,10 @@ const ProfileEdit = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl md:text-4xl font-display font-bold mb-2">
-              Edit <span className="text-gradient-hero">Profile</span>
+            <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-primary-foreground drop-shadow-md">
+              Edit <span className="text-secondary drop-shadow-sm">Profile</span>
             </h1>
-            <p className="text-muted-foreground">Make your profile stand out to find the perfect match</p>
+            <p className="text-primary-foreground/80">Make your profile stand out to find the perfect match</p>
           </motion.div>
 
           <div className="space-y-6">
