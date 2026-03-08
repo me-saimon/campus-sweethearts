@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   User, Camera, GraduationCap, MapPin, BookOpen, Heart,
-  Save, Eye, Plus, X, Sparkles, ChevronsUpDown, Check
+  Save, Eye, Plus, X, Sparkles, ChevronsUpDown, Check, Stethoscope
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
