@@ -39,8 +39,26 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-24 pb-16">
-        <div className="container mx-auto px-4">
+      
+      {/* Islamic green hero background */}
+      <div className="relative pt-24 pb-16">
+        <div className="absolute inset-0 bg-gradient-islamic opacity-90 h-72" />
+        <div className="absolute inset-0 islamic-pattern h-72" />
+        <div className="absolute inset-0 h-72 overflow-hidden">
+          <div className="absolute top-6 left-12 text-secondary/30 text-3xl">☪</div>
+          <div className="absolute top-10 right-16 text-secondary/20 text-2xl">☪</div>
+          <div className="absolute bottom-8 right-10 text-secondary/25 text-xl">☪</div>
+        </div>
+
+      <div className="relative">
+        {/* Subtle Islamic background decorations */}
+        <div className="absolute inset-0 islamic-arabesque opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 islamic-mosque-bg pointer-events-none" />
+        <div className="absolute top-20 left-0 w-64 h-64 rounded-full bg-primary/[0.03] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-secondary/[0.04] blur-3xl pointer-events-none" />
+        <div className="absolute bottom-40 left-10 w-48 h-48 rounded-full bg-teal/[0.03] blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative z-10">
           {/* Welcome Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -49,13 +67,13 @@ const Dashboard = () => {
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1 className="text-3xl md:text-4xl font-display font-bold">
-                  Welcome back, <span className="text-gradient-hero">Rafiq</span> 👋
+                <h1 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground drop-shadow-md">
+                  Welcome back, <span className="text-secondary drop-shadow-sm">Rafiq</span> 👋
                 </h1>
-                <p className="text-muted-foreground mt-1">Here's what's happening with your profile</p>
+                <p className="text-primary-foreground/80 mt-1">Here's what's happening with your profile</p>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20" asChild>
                   <Link to="/profile/edit"><Settings className="w-4 h-4 mr-1" /> Edit Profile</Link>
                 </Button>
                 <Button variant="hero" size="sm" asChild>
@@ -74,7 +92,7 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="shadow-card hover:shadow-card-hover transition-all duration-300 border-none">
+                <Card className="shadow-card hover:shadow-card-hover transition-all duration-300 border-none bg-primary/[0.06] backdrop-blur-sm border border-primary/10">
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between mb-3">
                       <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
@@ -211,6 +229,7 @@ const Dashboard = () => {
             </Card>
           </motion.div>
         </div>
+      </div>
       </div>
       <Footer />
     </div>
