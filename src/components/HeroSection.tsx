@@ -1,107 +1,251 @@
 import { Button } from "@/components/ui/button";
-import { Heart, Shield, MessageCircle, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { Heart, Shield, MessageCircle, Sparkles, ArrowRight, Star } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+
+const floatingProfiles = [
+  { name: "Aisha", uni: "DU", top: "20%", left: "8%", delay: 0, size: "w-16 h-16" },
+  { name: "Rafiq", uni: "BUET", top: "35%", right: "6%", delay: 0.5, size: "w-14 h-14" },
+  { name: "Nadia", uni: "JU", bottom: "30%", left: "5%", delay: 1, size: "w-12 h-12" },
+  { name: "Karim", uni: "CU", bottom: "20%", right: "10%", delay: 1.5, size: "w-16 h-16" },
+];
 
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-peach via-background to-lavender-light opacity-80" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-coral-light rounded-full blur-3xl opacity-30 animate-float" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-light rounded-full blur-3xl opacity-20 animate-float" style={{ animationDelay: "1s" }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-lavender-light rounded-full blur-3xl opacity-15" />
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-      {/* Floating hearts */}
-      {[...Array(6)].map((_, i) => (
+  return (
+    <section ref={ref} className="relative min-h-[110vh] flex items-center justify-center overflow-hidden pt-16">
+      {/* Parallax animated background layers */}
+      <motion.div style={{ y: bgY }} className="absolute inset-0 bg-gradient-to-br from-peach via-background to-lavender-light opacity-80" />
+      
+      {/* Animated gradient orbs */}
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-10 left-10 w-80 h-80 bg-coral-light rounded-full blur-3xl opacity-40"
+      />
+      <motion.div
+        animate={{ scale: [1.2, 1, 1.2], x: [0, -20, 0], y: [0, 30, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-20 right-10 w-96 h-96 bg-teal-light rounded-full blur-3xl opacity-30"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.3, 1], rotate: [0, 45, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-lavender-light rounded-full blur-3xl opacity-20"
+      />
+      <motion.div
+        animate={{ scale: [1.1, 0.9, 1.1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/4 right-1/4 w-64 h-64 bg-gold-light rounded-full blur-3xl opacity-25"
+      />
+
+      {/* Animated mesh grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)`,
+        backgroundSize: '40px 40px'
+      }} />
+
+      {/* Floating hearts with glow */}
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute text-coral/20"
-          initial={{ y: "100vh", x: `${15 + i * 15}vw`, rotate: 0 }}
-          animate={{ y: "-10vh", rotate: 360 }}
+          className="absolute"
+          initial={{ y: "110vh", x: `${10 + i * 12}vw`, rotate: 0, opacity: 0 }}
+          animate={{ y: "-10vh", rotate: 360, opacity: [0, 0.4, 0.4, 0] }}
           transition={{
-            duration: 8 + i * 2,
+            duration: 10 + i * 2,
             repeat: Infinity,
             ease: "linear",
-            delay: i * 1.5,
+            delay: i * 1.2,
           }}
         >
-          <Heart className="w-6 h-6 fill-current" />
+          <Heart className="w-5 h-5 text-coral fill-coral/30 drop-shadow-lg" />
         </motion.div>
       ))}
 
-      <div className="relative z-10 container mx-auto px-4 text-center">
+      {/* Floating profile badges */}
+      {floatingProfiles.map((profile, i) => (
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          key={profile.name}
+          className="absolute hidden lg:flex items-center gap-2 bg-card/90 backdrop-blur-md border border-border rounded-full px-3 py-2 shadow-card"
+          style={{ top: profile.top, left: profile.left, right: (profile as any).right, bottom: (profile as any).bottom }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+          transition={{
+            opacity: { delay: 1.5 + profile.delay, duration: 0.5 },
+            scale: { delay: 1.5 + profile.delay, duration: 0.5, type: "spring" },
+            y: { delay: 2 + profile.delay, duration: 3, repeat: Infinity, ease: "easeInOut" },
+          }}
         >
-          <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 mb-8">
-            <Sparkles className="w-4 h-4 text-gold" />
+          <div className={`${profile.size} rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-bold text-xs`}>
+            {profile.name[0]}
+          </div>
+          <div className="pr-1">
+            <div className="text-xs font-semibold text-foreground">{profile.name}</div>
+            <div className="text-[10px] text-muted-foreground">{profile.uni}</div>
+          </div>
+          <motion.div
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+          >
+            <Heart className="w-3 h-3 text-coral fill-coral" />
+          </motion.div>
+        </motion.div>
+      ))}
+
+      <motion.div style={{ y: textY, opacity }} className="relative z-10 container mx-auto px-4 text-center">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+        >
+          <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-md border border-border rounded-full px-5 py-2.5 mb-8 shadow-card">
+            <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+              <Sparkles className="w-4 h-4 text-gold" />
+            </motion.div>
             <span className="text-sm font-medium text-muted-foreground">
               The Trusted Matrimony Platform for Students
             </span>
+            <motion.div animate={{ rotate: [0, -15, 15, 0] }} transition={{ duration: 2, repeat: Infinity, delay: 1 }}>
+              <Sparkles className="w-4 h-4 text-coral" />
+            </motion.div>
           </div>
         </motion.div>
 
+        {/* Main heading with character animation */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-tight mb-6"
+          className="text-5xl md:text-7xl lg:text-[5.5rem] font-display font-bold leading-[1.1] mb-6"
         >
-          Find Your
-          <br />
-          <span className="text-gradient-hero">Perfect Match</span>
+          <motion.span
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="block"
+          >
+            Find Your
+          </motion.span>
+          <motion.span
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.4, type: "spring" }}
+            className="block text-gradient-hero relative"
+          >
+            Perfect Match
+            <motion.span
+              className="absolute -right-6 -top-4 md:-right-10 md:-top-6"
+              animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <Heart className="w-6 h-6 md:w-8 md:h-8 text-coral fill-coral" />
+            </motion.span>
+          </motion.span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Connect with like-minded university students for a meaningful journey.
-          Safe, halal, and family-approved matchmaking.
+          <br className="hidden sm:block" />
+          <span className="text-foreground font-medium">Safe, halal, and family-approved</span> matchmaking.
         </motion.p>
 
+        {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.45 }}
+          transition={{ duration: 0.8, delay: 0.65 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button variant="hero" size="xl" asChild>
-            <Link to="/signup">
-              <Heart className="w-5 h-5" />
-              Start Your Journey
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" className="rounded-full" asChild>
-            <Link to="/browse">Browse Profiles</Link>
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <Button variant="hero" size="xl" asChild className="group relative overflow-hidden">
+              <Link to="/signup">
+                <span className="relative z-10 flex items-center gap-2">
+                  <Heart className="w-5 h-5" />
+                  Start Your Journey
+                  <motion.span
+                    className="inline-block"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.span>
+                </span>
+              </Link>
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <Button variant="outline" size="lg" className="rounded-full border-2" asChild>
+              <Link to="/browse">Browse Profiles</Link>
+            </Button>
+          </motion.div>
         </motion.div>
 
-        {/* Stats */}
+        {/* Trust indicators */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground"
+        >
+          <div className="flex items-center gap-1.5">
+            <Shield className="w-3.5 h-3.5 text-teal" />
+            <span>Verified Students</span>
+          </div>
+          <div className="w-1 h-1 rounded-full bg-border" />
+          <div className="flex items-center gap-1.5">
+            <Heart className="w-3.5 h-3.5 text-coral" />
+            <span>Family Approved</span>
+          </div>
+          <div className="w-1 h-1 rounded-full bg-border" />
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-gold" />
+            <span>100% Safe</span>
+          </div>
+        </motion.div>
+
+        {/* Stats with animated counters */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto"
         >
           {[
-            { number: "5K+", label: "Students" },
-            { number: "500+", label: "Matches" },
-            { number: "100+", label: "Universities" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl md:text-3xl font-display font-bold text-gradient-hero">
+            { number: "5,000+", label: "Active Students", icon: "👨‍🎓" },
+            { number: "500+", label: "Happy Matches", icon: "💑" },
+            { number: "100+", label: "Universities", icon: "🏛️" },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              whileHover={{ scale: 1.08, y: -4 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="text-center p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-coral/30 hover:shadow-card transition-all cursor-default"
+            >
+              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="text-xl md:text-2xl font-display font-bold text-gradient-hero">
                 {stat.number}
               </div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
-            </div>
+              <div className="text-xs text-muted-foreground mt-0.5">{stat.label}</div>
+            </motion.div>
           ))}
         </motion.div>
+      </motion.div>
+
+      {/* Bottom wave divider */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <path d="M0 50C360 0 720 100 1080 50C1260 25 1380 75 1440 50V100H0V50Z" fill="hsl(var(--card))" />
+        </svg>
       </div>
     </section>
   );
