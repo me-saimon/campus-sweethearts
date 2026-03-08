@@ -230,6 +230,7 @@ const Dashboard = () => {
           </motion.div>
         </div>
       </div>
+      </div>
       <Footer />
     </div>
   );
