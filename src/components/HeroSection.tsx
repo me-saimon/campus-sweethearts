@@ -3,13 +3,7 @@ import { Shield, ArrowRight, Star, GraduationCap, Users, Building2, Moon } from 
 import { motion, useScroll, useTransform, useMotionValue, useSpring, animate } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
-
-const CrescentStar = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 64 64" fill="currentColor" className={className}>
-    <path d="M32 4C17.64 4 6 15.64 6 30s11.64 26 26 26c4.56 0 8.86-1.18 12.6-3.24A22 22 0 0 1 20 30a22 22 0 0 1 24.6-21.76C41.86 5.18 37.56 4 33 4h-1z" />
-    <path d="M48 14l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" />
-  </svg>
-);
+import { CrescentStar, Lantern, MosqueDome } from "@/components/IslamicVectors";
 
 const AnimatedCounter = ({ target, label, icon: Icon, color, delay }: { target: number; label: string; icon: any; color: string; delay: number }) => {
   const [count, setCount] = useState(0);
