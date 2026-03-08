@@ -256,13 +256,20 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
               </div>
 
               <p className="text-[10px] text-muted-foreground leading-relaxed">
-                Only peers from <span className="font-semibold text-foreground">{profileUniversity}</span> or <span className="font-semibold text-foreground">{profileDepartment}</span> can endorse this profile.
+                Enter your university details — the system will automatically verify your eligibility to endorse.
               </p>
 
               <Input
                 placeholder="Your name *"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="h-9 text-xs rounded-xl bg-card"
+              />
+
+              <Input
+                placeholder="Your university *"
+                value={formData.university}
+                onChange={(e) => setFormData({ ...formData, university: e.target.value })}
                 className="h-9 text-xs rounded-xl bg-card"
               />
 
@@ -281,6 +288,49 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
                 />
               </div>
 
+              {/* Eligibility indicator */}
+              {formData.university.trim() && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
+                    eligibility.eligible
+                      ? "bg-primary/5 border-primary/15"
+                      : "bg-destructive/5 border-destructive/15"
+                  }`}
+                >
+                  {eligibility.eligible ? (
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <XCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+                  )}
+                  <div>
+                    <p className={`font-semibold ${eligibility.eligible ? "text-primary" : "text-destructive"}`}>
+                      {eligibility.eligible ? "Eligible to endorse" : "Not eligible"}
+                    </p>
+                    {eligibility.eligible && eligibility.relationship && (
+                      <p className="text-muted-foreground mt-0.5">
+                        Auto-tagged as: <span className={`inline-block px-1.5 py-0.5 rounded-full text-[9px] font-medium border ml-1 ${relationshipColors[eligibility.relationship]}`}>
+                          {relationshipLabels[eligibility.relationship]}
+                        </span>
+                      </p>
+                    )}
+                    {eligibility.eligible && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {eligibility.matchDetails.map((m) => (
+                          <span key={m} className="text-[9px] text-primary/70 bg-primary/5 px-1.5 py-0.5 rounded">✓ {m}</span>
+                        ))}
+                      </div>
+                    )}
+                    {!eligibility.eligible && (
+                      <p className="text-muted-foreground mt-0.5">
+                        Must be from <span className="font-semibold text-foreground">{profileUniversity}</span> to endorse.
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
               <div>
                 <p className="text-[10px] text-muted-foreground mb-1.5">Your rating *</p>
                 <InteractiveStarRating rating={formData.rating} onRate={(r) => setFormData({ ...formData, rating: r })} />
@@ -291,13 +341,20 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
                 value={formData.comment}
                 onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                 className="text-xs rounded-xl bg-card min-h-[72px] resize-none"
+                disabled={!eligibility.eligible && formData.university.trim().length > 0}
               />
 
               <div className="flex gap-2">
                 <Button type="button" variant="ghost" size="sm" className="flex-1 rounded-xl text-xs h-9" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" variant="hero" size="sm" className="flex-1 rounded-xl text-xs h-9 gap-1.5">
+                <Button
+                  type="submit"
+                  variant="hero"
+                  size="sm"
+                  className="flex-1 rounded-xl text-xs h-9 gap-1.5"
+                  disabled={!eligibility.eligible && formData.university.trim().length > 0}
+                >
                   <MessageSquarePlus className="w-3 h-3" />
                   Submit
                 </Button>
