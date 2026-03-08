@@ -97,7 +97,7 @@ const HeroSection = () => {
     hidden: { opacity: 0, y: 50, rotateX: -90 },
     visible: (i: number) => ({
       opacity: 1, y: 0, rotateX: 0,
-      transition: { delay: 0.3 + i * 0.04, duration: 0.6, type: "spring", stiffness: 100 }
+      transition: { delay: 0.3 + i * 0.04, duration: 0.6, type: "spring" as const, stiffness: 100 }
     })
   };
 
