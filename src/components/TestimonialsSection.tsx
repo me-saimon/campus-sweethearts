@@ -20,7 +20,7 @@ const testimonials = [
     name: "Ayesha & Imran",
     university: "Chittagong University",
     quote: "I was skeptical at first, but the verified student system gave me confidence. Found my soulmate in just 3 months!",
-    emoji: "🥰",
+    icon: Sparkles,
     rating: 5,
   },
   {
