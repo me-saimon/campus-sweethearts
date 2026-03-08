@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CrescentStar, Lantern, IslamicFrame } from "@/components/IslamicVectors";
 import { useState } from "react";
+import EndorsementSection from "@/components/EndorsementSection";
 
 interface ProfileDetailModalProps {
   profile: StudentProfile;
