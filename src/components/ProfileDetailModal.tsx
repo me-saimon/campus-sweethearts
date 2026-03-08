@@ -209,6 +209,16 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
             </div>
           </motion.div>
 
+          {/* Endorsements */}
+          <motion.div variants={fadeUp}>
+            <EndorsementSection
+              endorsements={profile.endorsements}
+              profileName={profile.name}
+              profileUniversity={profile.university}
+              profileDepartment={profile.department}
+            />
+          </motion.div>
+
           {/* Divider with Islamic touch */}
           <motion.div variants={fadeUp} className="flex items-center gap-3 py-1">
             <div className="flex-1 h-px bg-border" />
