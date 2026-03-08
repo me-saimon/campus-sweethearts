@@ -63,35 +63,6 @@ const HeroSection = () => {
         </motion.div>
       ))}
 
-      {/* Floating profile badges */}
-      {floatingProfiles.map((profile, i) => (
-        <motion.div
-          key={profile.name}
-          className="absolute hidden lg:flex items-center gap-2 bg-card/90 backdrop-blur-md border border-border rounded-full px-3 py-2 shadow-card"
-          style={{ top: profile.top, left: profile.left, right: (profile as any).right, bottom: (profile as any).bottom }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
-          transition={{
-            opacity: { delay: 1.5 + profile.delay, duration: 0.5 },
-            scale: { delay: 1.5 + profile.delay, duration: 0.5, type: "spring" },
-            y: { delay: 2 + profile.delay, duration: 3, repeat: Infinity, ease: "easeInOut" },
-          }}
-        >
-          <div className={`${profile.size} rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-bold text-xs`}>
-            {profile.name[0]}
-          </div>
-          <div className="pr-1">
-            <div className="text-xs font-semibold text-foreground">{profile.name}</div>
-            <div className="text-[10px] text-muted-foreground">{profile.uni}</div>
-          </div>
-          <motion.div
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-          >
-            <Heart className="w-3 h-3 text-coral fill-coral" />
-          </motion.div>
-        </motion.div>
-      ))}
 
       <motion.div style={{ y: textY, opacity }} className="relative z-10 container mx-auto px-4 text-center">
         {/* Badge */}
