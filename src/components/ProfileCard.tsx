@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield } from "lucide-react";
+import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StudentProfile } from "@/data/mockProfiles";
 import { useState } from "react";
@@ -25,27 +25,30 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      initial={{ opacity: 0, y: 40, scale: 0.93 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ delay: index * 0.08, duration: 0.5, type: "spring", stiffness: 100 }}
-      whileHover={{ y: -8 }}
-      className="group relative bg-card rounded-2xl border border-border overflow-hidden shadow-card hover:shadow-hover hover:border-primary/20 transition-all duration-500"
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.07, duration: 0.5, type: "spring" as const, stiffness: 90 }}
+      whileHover={{ y: -10, transition: { duration: 0.3 } }}
+      className="group relative bg-card rounded-3xl border border-border overflow-hidden shadow-card hover:shadow-hover transition-all duration-500 cursor-pointer"
+      onClick={onViewProfile}
     >
-      {/* Hover glow overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
+      {/* Subtle glow on hover */}
+      <div className="absolute -inset-px rounded-3xl bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-1" />
 
-      {/* Header gradient with pattern */}
-      <div className={`h-28 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
-        <div className="absolute inset-0 islamic-pattern opacity-20" />
+      {/* Header gradient with Islamic pattern */}
+      <div className={`h-32 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+        <div className="absolute inset-0 islamic-pattern opacity-25" />
+        {/* Decorative arch shape */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-12 bg-card rounded-t-full" />
 
         {/* Verified badge */}
         <motion.div
           initial={{ scale: 0 }}
           whileInView={{ scale: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 + index * 0.08, type: "spring" }}
-          className="absolute top-3 left-3 flex items-center gap-1 bg-primary-foreground/20 backdrop-blur-sm rounded-full px-2.5 py-1"
+          transition={{ delay: 0.3 + index * 0.05, type: "spring" as const }}
+          className="absolute top-3 left-3 flex items-center gap-1 bg-primary-foreground/25 backdrop-blur-sm rounded-full px-2.5 py-1 border border-primary-foreground/10"
         >
           <Shield className="w-3 h-3 text-primary-foreground" />
           <span className="text-[10px] font-semibold text-primary-foreground">Verified</span>
@@ -54,19 +57,18 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
         {/* Like button */}
         <motion.button
           whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.85 }}
           onClick={(e) => { e.stopPropagation(); setIsLiked(!isLiked); }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center border border-primary-foreground/10 hover:bg-primary-foreground/30 transition-colors"
         >
-          <Heart className={`w-4 h-4 transition-all ${isLiked ? 'text-accent fill-accent scale-110' : 'text-primary-foreground'}`} />
+          <Heart className={`w-4 h-4 transition-all duration-300 ${isLiked ? 'text-accent fill-accent scale-110' : 'text-primary-foreground'}`} />
         </motion.button>
 
-        {/* Avatar */}
-        <div className="absolute -bottom-8 left-5">
+        {/* Avatar in arch */}
+        <div className="absolute -bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
           <motion.div
-            whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
-            transition={{ duration: 0.4 }}
-            className="w-16 h-16 rounded-xl bg-card border-[3px] border-card flex items-center justify-center shadow-lg relative overflow-hidden"
+            whileHover={{ scale: 1.1 }}
+            className="w-16 h-16 rounded-full bg-card border-4 border-card flex items-center justify-center shadow-lg relative overflow-hidden"
           >
             <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-15`} />
             <span className="text-xl font-display font-bold text-gradient-hero relative z-10">
@@ -76,50 +78,39 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
         </div>
       </div>
 
-      <div className="pt-11 px-5 pb-5">
-        {/* Name & age */}
-        <div className="mb-3">
-          <h3 className="text-base font-display font-bold text-foreground group-hover:text-gradient-hero transition-all">
-            {profile.name}
-          </h3>
-          <p className="text-xs text-muted-foreground mt-0.5">{profile.age} years old</p>
-        </div>
+      {/* Content */}
+      <div className="pt-12 px-5 pb-5 text-center">
+        {/* Name */}
+        <h3 className="text-base font-display font-bold text-foreground group-hover:text-primary transition-colors mb-0.5">
+          {profile.name}
+        </h3>
+        <p className="text-xs text-muted-foreground mb-4">{profile.age} years old · {profile.location}</p>
 
-        {/* Info pills */}
-        <div className="space-y-1.5 mb-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="w-3 h-3 text-primary" />
-            </div>
-            <span className="truncate">{profile.university}</span>
+        {/* Info pills - compact */}
+        <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground bg-primary/5 rounded-lg px-2.5 py-1.5 border border-primary/5">
+            <GraduationCap className="w-3 h-3 text-primary" />
+            <span className="truncate max-w-[120px]">{profile.university}</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center flex-shrink-0">
-              <BookOpen className="w-3 h-3 text-accent" />
-            </div>
-            <span className="truncate">{profile.department} · {profile.year}</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <div className="w-5 h-5 rounded-md bg-rose/10 flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-3 h-3 text-rose" />
-            </div>
-            <span>{profile.location}</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground bg-accent/5 rounded-lg px-2.5 py-1.5 border border-accent/5">
+            <BookOpen className="w-3 h-3 text-accent" />
+            <span className="truncate max-w-[100px]">{profile.department}</span>
           </div>
         </div>
 
         {/* Bio */}
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">{profile.bio}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed px-1">{profile.bio}</p>
 
         {/* Interests */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-wrap justify-center gap-1.5 mb-5">
           {profile.interests.slice(0, 3).map((interest, i) => (
             <motion.span
               key={interest}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4 + i * 0.05 }}
-              className="text-[10px] px-2.5 py-1 rounded-full bg-primary/8 text-primary font-medium border border-primary/10"
+              transition={{ delay: 0.35 + i * 0.04 }}
+              className="text-[10px] px-2.5 py-1 rounded-full bg-primary/8 text-primary font-medium border border-primary/8"
             >
               {interest}
             </motion.span>
@@ -136,11 +127,11 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
           <Button
             variant="outline"
             size="sm"
-            className="w-full rounded-xl border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group/btn"
-            onClick={onViewProfile}
+            className="w-full rounded-xl border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group/btn gap-2"
+            onClick={(e) => { e.stopPropagation(); onViewProfile(); }}
           >
             <Eye className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-            View Profile
+            View Full Profile
           </Button>
         </motion.div>
       </div>
