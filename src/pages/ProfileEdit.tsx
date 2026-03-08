@@ -153,6 +153,18 @@ const ProfileEdit = () => {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
+                      <Label>Gender</Label>
+                      <Select value={formData.gender} onValueChange={v => setFormData({...formData, gender: v})}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
                       <Label>Location</Label>
                       <Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="City" />
                     </div>
