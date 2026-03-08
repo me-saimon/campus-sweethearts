@@ -186,9 +186,9 @@ const HeroSection = () => {
           className="mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto"
         >
           {[
-            { number: "5,000+", label: "Active Students", icon: "👨‍🎓" },
-            { number: "500+", label: "Happy Matches", icon: "💑" },
-            { number: "100+", label: "Universities", icon: "🏛️" },
+            { number: "5,000+", label: "Active Students", icon: GraduationCap, color: "text-coral" },
+            { number: "500+", label: "Happy Matches", icon: Users, color: "text-teal" },
+            { number: "100+", label: "Universities", icon: Building2, color: "text-lavender" },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -196,7 +196,9 @@ const HeroSection = () => {
               transition={{ type: "spring", stiffness: 300 }}
               className="text-center p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-coral/30 hover:shadow-card transition-all cursor-default"
             >
-              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="flex justify-center mb-1">
+                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+              </div>
               <div className="text-xl md:text-2xl font-display font-bold text-gradient-hero">
                 {stat.number}
               </div>

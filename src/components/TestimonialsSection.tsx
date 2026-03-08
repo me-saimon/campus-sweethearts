@@ -103,8 +103,8 @@ const TestimonialsSection = () => {
               </p>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center text-lg">
-                  {testimonial.emoji}
+                <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
+                  <testimonial.icon className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-foreground flex items-center gap-1.5">
