@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   User, Camera, GraduationCap, MapPin, BookOpen, Heart,
-  Save, Eye, Plus, X, Sparkles
+  Save, Eye, Plus, X, Sparkles, ChevronsUpDown, Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { universities } from "@/data/universities";
 
 const interestOptions = [
   "Reading", "Writing", "Cooking", "Travel", "Photography", "Music",
@@ -25,11 +29,12 @@ const interestOptions = [
 ];
 
 const ProfileEdit = () => {
+  const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "Rafiq Ahmed",
     age: "24",
-    university: "BUET",
+    university: "Bangladesh University of Engineering & Technology",
     department: "Computer Science",
     year: "Masters",
     location: "Dhaka",
@@ -164,7 +169,42 @@ const ProfileEdit = () => {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label>University</Label>
-                    <Input value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} />
+                    <Popover open={uniOpen} onOpenChange={setUniOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={uniOpen}
+                          className="w-full justify-between font-normal"
+                        >
+                          {formData.university || "Select university..."}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                        <Command>
+                          <CommandInput placeholder="Search university..." />
+                          <CommandList>
+                            <CommandEmpty>No university found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {universities.map(uni => (
+                                <CommandItem
+                                  key={uni}
+                                  value={uni}
+                                  onSelect={() => {
+                                    setFormData({...formData, university: uni});
+                                    setUniOpen(false);
+                                  }}
+                                >
+                                  <Check className={cn("mr-2 h-4 w-4", formData.university === uni ? "opacity-100" : "opacity-0")} />
+                                  {uni}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
