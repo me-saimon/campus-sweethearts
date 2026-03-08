@@ -4,12 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 
-const floatingProfiles = [
-  { name: "Aisha", uni: "DU", top: "20%", left: "8%", delay: 0, size: "w-16 h-16" },
-  { name: "Rafiq", uni: "BUET", top: "35%", right: "6%", delay: 0.5, size: "w-14 h-14" },
-  { name: "Nadia", uni: "JU", bottom: "30%", left: "5%", delay: 1, size: "w-12 h-12" },
-  { name: "Karim", uni: "CU", bottom: "20%", right: "10%", delay: 1.5, size: "w-16 h-16" },
-];
 
 const HeroSection = () => {
   const ref = useRef<HTMLElement>(null);
