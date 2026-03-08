@@ -169,7 +169,42 @@ const ProfileEdit = () => {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label>University</Label>
-                    <Input value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} />
+                    <Popover open={uniOpen} onOpenChange={setUniOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={uniOpen}
+                          className="w-full justify-between font-normal"
+                        >
+                          {formData.university || "Select university..."}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                        <Command>
+                          <CommandInput placeholder="Search university..." />
+                          <CommandList>
+                            <CommandEmpty>No university found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {universities.map(uni => (
+                                <CommandItem
+                                  key={uni}
+                                  value={uni}
+                                  onSelect={() => {
+                                    setFormData({...formData, university: uni});
+                                    setUniOpen(false);
+                                  }}
+                                >
+                                  <Check className={cn("mr-2 h-4 w-4", formData.university === uni ? "opacity-100" : "opacity-0")} />
+                                  {uni}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
