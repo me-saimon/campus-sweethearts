@@ -27,7 +27,7 @@ const testimonials = [
     name: "Mariam & Hasan",
     university: "Jahangirnagar University",
     quote: "The token-based chat kept our conversations meaningful. It forced us to be genuine rather than just small talk.",
-    emoji: "❤️",
+    icon: HeartHandshake,
     rating: 5,
   },
 ];
