@@ -253,65 +253,144 @@ const ProfileEdit = () => {
                   <CardDescription>Your university details</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>University</Label>
-                    <Popover open={uniOpen} onOpenChange={setUniOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={uniOpen}
-                          className="w-full justify-between font-normal"
-                        >
-                          {formData.university || "Select university..."}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Search university..." />
-                          <CommandList>
-                            <CommandEmpty>No university found.</CommandEmpty>
-                            <CommandGroup className="max-h-60 overflow-y-auto">
-                              {universities.map(uni => (
-                                <CommandItem
-                                  key={uni}
-                                  value={uni}
-                                  onSelect={() => {
-                                    setFormData({...formData, university: uni});
-                                    setUniOpen(false);
-                                  }}
-                                >
-                                  <Check className={cn("mr-2 h-4 w-4", formData.university === uni ? "opacity-100" : "opacity-0")} />
-                                  {uni}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                  {/* Medical Student Toggle */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed border-primary/30 bg-primary/5">
+                    <Checkbox
+                      id="medical-student"
+                      checked={isMedicalStudent}
+                      onCheckedChange={(checked) => {
+                        setIsMedicalStudent(!!checked);
+                        if (!checked) {
+                          setFormData({ ...formData, medicalCollege: "", university: "", department: "" });
+                        } else {
+                          setFormData({ ...formData, university: "", department: "MBBS" });
+                        }
+                      }}
+                    />
+                    <Label htmlFor="medical-student" className="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                      <Stethoscope className="w-4 h-4 text-primary" /> I am a Medical Student
+                    </Label>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Department</Label>
-                      <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Year</Label>
-                      <Select value={formData.year} onValueChange={v => setFormData({...formData, year: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1st Year">1st Year</SelectItem>
-                          <SelectItem value="2nd Year">2nd Year</SelectItem>
-                          <SelectItem value="3rd Year">3rd Year</SelectItem>
-                          <SelectItem value="4th Year">4th Year</SelectItem>
-                          <SelectItem value="Masters">Masters</SelectItem>
-                          <SelectItem value="PhD">PhD</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+
+                  {isMedicalStudent ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label>Medical College</Label>
+                        <Popover open={medCollegeOpen} onOpenChange={setMedCollegeOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={medCollegeOpen}
+                              className="w-full justify-between font-normal"
+                            >
+                              {formData.medicalCollege || "Select medical college..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder="Search medical college..." />
+                              <CommandList>
+                                <CommandEmpty>No medical college found.</CommandEmpty>
+                                <CommandGroup className="max-h-60 overflow-y-auto">
+                                  {medicalColleges.map(mc => (
+                                    <CommandItem
+                                      key={mc}
+                                      value={mc}
+                                      onSelect={() => {
+                                        setFormData({ ...formData, medicalCollege: mc });
+                                        setMedCollegeOpen(false);
+                                      }}
+                                    >
+                                      <Check className={cn("mr-2 h-4 w-4", formData.medicalCollege === mc ? "opacity-100" : "opacity-0")} />
+                                      {mc}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Year</Label>
+                        <Select value={formData.year} onValueChange={v => setFormData({ ...formData, year: v })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1st Year">1st Year</SelectItem>
+                            <SelectItem value="2nd Year">2nd Year</SelectItem>
+                            <SelectItem value="3rd Year">3rd Year</SelectItem>
+                            <SelectItem value="4th Year">4th Year</SelectItem>
+                            <SelectItem value="5th Year">5th Year</SelectItem>
+                            <SelectItem value="Intern">Intern</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        <Label>University</Label>
+                        <Popover open={uniOpen} onOpenChange={setUniOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={uniOpen}
+                              className="w-full justify-between font-normal"
+                            >
+                              {formData.university || "Select university..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder="Search university..." />
+                              <CommandList>
+                                <CommandEmpty>No university found.</CommandEmpty>
+                                <CommandGroup className="max-h-60 overflow-y-auto">
+                                  {universities.map(uni => (
+                                    <CommandItem
+                                      key={uni}
+                                      value={uni}
+                                      onSelect={() => {
+                                        setFormData({ ...formData, university: uni });
+                                        setUniOpen(false);
+                                      }}
+                                    >
+                                      <Check className={cn("mr-2 h-4 w-4", formData.university === uni ? "opacity-100" : "opacity-0")} />
+                                      {uni}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Department</Label>
+                          <Input value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Year</Label>
+                          <Select value={formData.year} onValueChange={v => setFormData({ ...formData, year: v })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1st Year">1st Year</SelectItem>
+                              <SelectItem value="2nd Year">2nd Year</SelectItem>
+                              <SelectItem value="3rd Year">3rd Year</SelectItem>
+                              <SelectItem value="4th Year">4th Year</SelectItem>
+                              <SelectItem value="Masters">Masters</SelectItem>
+                              <SelectItem value="PhD">PhD</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </>
+                  )}
                   {!showCollege ? (
                     <Button
                       type="button"
@@ -329,7 +408,7 @@ const ProfileEdit = () => {
                         <button
                           type="button"
                           className="text-muted-foreground hover:text-destructive transition-colors"
-                          onClick={() => { setShowCollege(false); setFormData({...formData, college: ""}); }}
+                          onClick={() => { setShowCollege(false); setFormData({ ...formData, college: "" }); }}
                         >
                           <X className="w-4 h-4" />
                         </button>
