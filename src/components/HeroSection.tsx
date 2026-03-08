@@ -3,13 +3,7 @@ import { Shield, ArrowRight, Star, GraduationCap, Users, Building2, Moon } from 
 import { motion, useScroll, useTransform, useMotionValue, useSpring, animate } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
-
-const CrescentStar = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 64 64" fill="currentColor" className={className}>
-    <path d="M32 4C17.64 4 6 15.64 6 30s11.64 26 26 26c4.56 0 8.86-1.18 12.6-3.24A22 22 0 0 1 20 30a22 22 0 0 1 24.6-21.76C41.86 5.18 37.56 4 33 4h-1z" />
-    <path d="M48 14l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" />
-  </svg>
-);
+import { CrescentStar, Lantern, MosqueDome } from "@/components/IslamicVectors";
 
 const AnimatedCounter = ({ target, label, icon: Icon, color, delay }: { target: number; label: string; icon: any; color: string; delay: number }) => {
   const [count, setCount] = useState(0);
@@ -113,6 +107,52 @@ const HeroSection = () => {
       {/* Layered background */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 bg-gradient-to-br from-emerald-light via-background to-gold-light opacity-80" />
       <div className="absolute inset-0 islamic-pattern opacity-20" />
+      <div className="absolute inset-0 islamic-arabesque" />
+      <div className="absolute inset-0 islamic-stars opacity-50" />
+
+      {/* Mosque silhouette at bottom */}
+      <div className="absolute bottom-12 left-0 right-0 h-40 islamic-mosque-bg bg-repeat-x bg-bottom opacity-80" />
+
+      {/* Floating lanterns */}
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 5, repeat: Infinity }}
+        className="absolute top-24 left-[5%] hidden lg:block"
+      >
+        <Lantern className="w-8 h-14 text-accent/20 lantern-glow" />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 6, repeat: Infinity, delay: 2 }}
+        className="absolute top-32 right-[7%] hidden lg:block"
+      >
+        <Lantern className="w-6 h-10 text-accent/15 lantern-glow" />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 7, repeat: Infinity, delay: 1 }}
+        className="absolute top-48 left-[18%] hidden xl:block"
+      >
+        <Lantern className="w-5 h-8 text-accent/10 lantern-glow" />
+      </motion.div>
+
+      {/* Mosque dome decoration */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 1.5 }}
+        className="absolute bottom-16 left-[3%] hidden lg:block"
+      >
+        <MosqueDome className="w-32 h-20 text-primary/8" />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 1.5 }}
+        className="absolute bottom-16 right-[3%] hidden lg:block"
+      >
+        <MosqueDome className="w-28 h-18 text-primary/6" />
+      </motion.div>
 
       {/* Mouse-reactive gradient orbs */}
       <motion.div
