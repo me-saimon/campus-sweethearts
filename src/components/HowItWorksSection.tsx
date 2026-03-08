@@ -39,7 +39,7 @@ const steps = [
     color: "bg-gold",
   },
   {
-    icon: Infinity,
+    icon: InfinityIcon,
     step: "06",
     title: "Unlimited Connection",
     description: "Once both guardians approve, enjoy unlimited chat and plan your beautiful future together!",
