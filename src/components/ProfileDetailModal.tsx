@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CrescentStar, Lantern, IslamicFrame } from "@/components/IslamicVectors";
 import { useState } from "react";
+import EndorsementSection from "@/components/EndorsementSection";
 
 interface ProfileDetailModalProps {
   profile: StudentProfile;
@@ -206,6 +207,16 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
                 </motion.span>
               ))}
             </div>
+          </motion.div>
+
+          {/* Endorsements */}
+          <motion.div variants={fadeUp}>
+            <EndorsementSection
+              endorsements={profile.endorsements}
+              profileName={profile.name}
+              profileUniversity={profile.university}
+              profileDepartment={profile.department}
+            />
           </motion.div>
 
           {/* Divider with Islamic touch */}

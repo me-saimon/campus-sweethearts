@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield, Star } from "lucide-react";
+import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield, Star, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StudentProfile } from "@/data/mockProfiles";
 import { useState } from "react";
@@ -99,7 +99,22 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
         </div>
 
         {/* Bio */}
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed px-1">{profile.bio}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed px-1">{profile.bio}</p>
+
+        {/* Endorsement badge */}
+        {profile.endorsements.length > 0 && (
+          <div className="flex items-center justify-center gap-1.5 mb-3 text-[11px] text-muted-foreground">
+            <ThumbsUp className="w-3 h-3 text-primary" />
+            <span>
+              <span className="font-semibold text-foreground">{profile.endorsements.length}</span> endorsement{profile.endorsements.length !== 1 ? "s" : ""}
+            </span>
+            <div className="flex items-center gap-0.5 ml-1">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star key={s} className={`w-2.5 h-2.5 ${s <= Math.round(profile.endorsements.reduce((a, e) => a + e.rating, 0) / profile.endorsements.length) ? "text-accent fill-accent" : "text-muted-foreground/20"}`} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Interests */}
         <div className="flex flex-wrap justify-center gap-1.5 mb-5">
