@@ -92,7 +92,7 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="shadow-card hover:shadow-card-hover transition-all duration-300 border-none bg-primary/[0.06] backdrop-blur-sm border border-primary/10">
+                <Card className="shadow-card hover:shadow-card-hover transition-all duration-300 border-none bg-card/90 backdrop-blur-sm border border-primary/10">
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between mb-3">
                       <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
