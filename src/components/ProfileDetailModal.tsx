@@ -216,6 +216,7 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
               profileName={profile.name}
               profileUniversity={profile.university}
               profileDepartment={profile.department}
+              profileYear={profile.year}
             />
           </motion.div>
 

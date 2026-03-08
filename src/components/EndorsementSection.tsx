@@ -102,10 +102,12 @@ const InteractiveStarRating = ({ rating, onRate }: { rating: number; onRate: (r:
   );
 };
 
-const EndorsementSection = ({ endorsements, profileName, profileUniversity, profileDepartment }: EndorsementSectionProps) => {
+const EndorsementSection = ({ endorsements, profileName, profileUniversity, profileDepartment, profileYear }: EndorsementSectionProps) => {
   const [showForm, setShowForm] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const [formData, setFormData] = useState({ name: "", department: "", year: "", comment: "", rating: 0 });
+  const [formData, setFormData] = useState({ name: "", university: "", department: "", year: "", comment: "", rating: 0 });
+
+  const eligibility = getEligibility(formData.university, formData.department, formData.year, profileUniversity, profileDepartment, profileYear);
 
   const avgRating = endorsements.length > 0
     ? (endorsements.reduce((sum, e) => sum + e.rating, 0) / endorsements.length).toFixed(1)
