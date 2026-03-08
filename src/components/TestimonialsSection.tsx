@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, Quote, Star } from "lucide-react";
+import { Heart, Quote, Star, Users, Gem, Sparkles, HeartHandshake } from "lucide-react";
 
 const testimonials = [
   {
