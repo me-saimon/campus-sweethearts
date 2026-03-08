@@ -28,18 +28,31 @@ const interestOptions = [
   "Medicine", "Business", "Engineering", "Nature"
 ];
 
+const malePreferenceTags = [
+  "Into Cooking", "Be a Housewife", "Will Work if Needed", "Travelling",
+  "Knitting", "Religious", "Family-oriented", "Educated", "Caring",
+  "Modest", "Creative", "Supportive", "Health-conscious"
+];
+
+const femalePreferenceTags = [
+  "Provider", "Religious", "Family-oriented", "Educated", "Ambitious",
+  "Caring", "Respectful", "Supportive", "Honest", "Health-conscious",
+  "Good with Kids", "Financially Stable", "Humble"
+];
+
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "Rafiq Ahmed",
     age: "24",
+    gender: "Male",
     university: "Bangladesh University of Engineering & Technology",
     department: "Computer Science",
     year: "Masters",
     location: "Dhaka",
     religion: "Islam",
-    lookingFor: "Someone kind, educated, and family-oriented",
+    lookingFor: "",
     bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
     college: "",
     guardianName: "Mr. Ahmed Hossain",
@@ -47,6 +60,18 @@ const ProfileEdit = () => {
     guardianPhone: "+880171XXXXXXX",
     guardianRelation: "Father",
   });
+
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Educated", "Family-oriented"]);
+
+  const preferenceTags = formData.gender === "Male" ? malePreferenceTags : femalePreferenceTags;
+
+  const togglePreference = (tag: string) => {
+    setSelectedPreferences(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : prev.length < 8 ? [...prev, tag] : prev
+    );
+  };
   const [showCollege, setShowCollege] = useState(false);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([
@@ -124,6 +149,18 @@ const ProfileEdit = () => {
                     <div className="space-y-2">
                       <Label>Age</Label>
                       <Input type="number" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Gender</Label>
+                      <Select value={formData.gender} onValueChange={v => setFormData({...formData, gender: v})}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -301,12 +338,30 @@ const ProfileEdit = () => {
                   </CardTitle>
                   <CardDescription>What are you looking for?</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  <CardDescription className="text-xs">Select up to 8 preferences ({selectedPreferences.length}/8)</CardDescription>
+                  <div className="flex flex-wrap gap-2">
+                    {preferenceTags.map(tag => (
+                      <Badge
+                        key={tag}
+                        variant={selectedPreferences.includes(tag) ? "default" : "outline"}
+                        className={`cursor-pointer transition-all text-sm py-1.5 px-3 ${
+                          selectedPreferences.includes(tag)
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                            : "hover:bg-primary/10 hover:border-primary"
+                        }`}
+                        onClick={() => togglePreference(tag)}
+                      >
+                        {selectedPreferences.includes(tag) && <X className="w-3 h-3 mr-1" />}
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                   <Textarea
                     value={formData.lookingFor}
                     onChange={e => setFormData({...formData, lookingFor: e.target.value})}
-                    placeholder="Describe what you're looking for in a life partner..."
-                    className="min-h-[100px]"
+                    placeholder="Any additional preferences..."
+                    className="min-h-[80px]"
                   />
                 </CardContent>
               </Card>
