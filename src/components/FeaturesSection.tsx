@@ -1,4 +1,4 @@
-import { Shield, MessageCircle, Heart, Users, CreditCard, Mail, ArrowUpRight } from "lucide-react";
+import { Shield, MessageCircle, Heart, Users, CreditCard, Mail, ArrowUpRight, Moon } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useRef } from "react";
 
@@ -6,25 +6,25 @@ const features = [
   {
     icon: Shield,
     title: "Verified Students",
-    description: "Only verified university students can join. Your safety is our priority.",
-    gradient: "from-teal/20 to-teal/5",
-    iconBg: "bg-teal/15",
-    iconColor: "text-teal",
-    borderHover: "hover:border-teal/40",
+    description: "Only verified university students can join. Your safety and dignity are our priority.",
+    gradient: "from-primary/20 to-primary/5",
+    iconBg: "bg-primary/15",
+    iconColor: "text-primary",
+    borderHover: "hover:border-primary/40",
   },
   {
     icon: MessageCircle,
-    title: "Controlled Chat",
-    description: "Chat with token limits to keep conversations meaningful and respectful.",
-    gradient: "from-coral/20 to-coral/5",
-    iconBg: "bg-coral/15",
-    iconColor: "text-coral",
-    borderHover: "hover:border-coral/40",
+    title: "Respectful Chat",
+    description: "Chat with token limits to ensure conversations remain purposeful and respectful.",
+    gradient: "from-accent/20 to-accent/5",
+    iconBg: "bg-accent/15",
+    iconColor: "text-accent",
+    borderHover: "hover:border-accent/40",
   },
   {
     icon: Heart,
-    title: "Show Interest",
-    description: "Found your match? Show interest and take the next step toward a beautiful future.",
+    title: "Express Interest",
+    description: "Found a compatible match? Express your interest and take a step toward a blessed union.",
     gradient: "from-rose/20 to-rose/5",
     iconBg: "bg-rose/15",
     iconColor: "text-rose",
@@ -32,30 +32,30 @@ const features = [
   },
   {
     icon: Users,
-    title: "Guardian Approval",
-    description: "Automatic email to guardians when interest is shown. Family stays involved.",
-    gradient: "from-lavender/20 to-lavender/5",
-    iconBg: "bg-lavender/15",
-    iconColor: "text-lavender",
-    borderHover: "hover:border-lavender/40",
+    title: "Guardian Involvement",
+    description: "Guardians are notified when interest is shown — keeping families involved as Islam encourages.",
+    gradient: "from-primary/20 to-primary/5",
+    iconBg: "bg-primary/15",
+    iconColor: "text-primary",
+    borderHover: "hover:border-primary/40",
   },
   {
     icon: Mail,
     title: "Family Notification",
-    description: "Guardians receive proposal details via email for transparent communication.",
-    gradient: "from-gold/20 to-gold/5",
-    iconBg: "bg-gold/15",
-    iconColor: "text-gold",
-    borderHover: "hover:border-gold/40",
+    description: "Guardians receive proposal details via email for transparent, halal communication.",
+    gradient: "from-accent/20 to-accent/5",
+    iconBg: "bg-accent/15",
+    iconColor: "text-accent",
+    borderHover: "hover:border-accent/40",
   },
   {
     icon: CreditCard,
-    title: "Premium Proposals",
-    description: "Small fee for marriage proposals ensures serious intentions only.",
-    gradient: "from-secondary/20 to-secondary/5",
-    iconBg: "bg-secondary/15",
-    iconColor: "text-secondary",
-    borderHover: "hover:border-secondary/40",
+    title: "Serious Proposals Only",
+    description: "A small fee for marriage proposals ensures only sincere intentions — no time wasters.",
+    gradient: "from-primary/20 to-primary/5",
+    iconBg: "bg-primary/15",
+    iconColor: "text-primary",
+    borderHover: "hover:border-primary/40",
   },
 ];
 
@@ -90,11 +90,7 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
       onMouseLeave={handleMouseLeave}
       className={`group relative p-6 rounded-2xl bg-card border border-border ${feature.borderHover} transition-all duration-500 cursor-default overflow-hidden`}
     >
-      {/* Gradient overlay on hover */}
       <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`} />
-      
-      {/* Glow effect */}
-      <div className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-transparent via-transparent to-transparent blur-sm" />
 
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-4">
@@ -123,18 +119,22 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
 const FeaturesSection = () => {
   return (
     <section className="py-24 bg-card relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+      
+      {/* Islamic geometric decorative circles */}
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        className="absolute -top-40 -right-40 w-80 h-80 rounded-full border border-border/30"
+        className="absolute -top-40 -right-40 w-80 h-80 rounded-full border border-accent/10"
       />
       <motion.div
         animate={{ rotate: -360 }}
         transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-        className="absolute -bottom-60 -left-60 w-[500px] h-[500px] rounded-full border border-border/20"
+        className="absolute -bottom-60 -left-60 w-[500px] h-[500px] rounded-full border border-primary/10"
       />
+
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 islamic-pattern opacity-20" />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -148,16 +148,16 @@ const FeaturesSection = () => {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="inline-flex items-center gap-2 bg-coral/10 rounded-full px-4 py-1.5 mb-6"
+            className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-1.5 mb-6"
           >
-            <Heart className="w-3.5 h-3.5 text-coral fill-coral" />
-            <span className="text-xs font-semibold text-coral uppercase tracking-wider">Why Choose Us</span>
+            <Moon className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Why Choose Us</span>
           </motion.div>
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
             Why <span className="text-gradient-hero">UniMatch</span>?
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Built exclusively for university students who are serious about finding a life partner
+            Built for Muslim university students who are serious about finding a life partner — the halal way
           </p>
         </motion.div>
 
