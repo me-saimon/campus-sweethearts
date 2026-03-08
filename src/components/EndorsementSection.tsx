@@ -117,14 +117,18 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.comment || formData.rating === 0) {
+    if (!formData.name || !formData.university || !formData.comment || formData.rating === 0) {
       toast.error("Please fill in all required fields and give a rating.");
       return;
     }
+    if (!eligibility.eligible) {
+      toast.error("You must be from the same university to endorse this profile.");
+      return;
+    }
     toast.success("JazakAllahu Khairan! Your endorsement has been submitted.", {
-      description: "It will appear after verification by our team.",
+      description: `Tagged as "${eligibility.relationship ? relationshipLabels[eligibility.relationship] : "Peer"}". It will appear after verification.`,
     });
-    setFormData({ name: "", department: "", year: "", comment: "", rating: 0 });
+    setFormData({ name: "", university: "", department: "", year: "", comment: "", rating: 0 });
     setShowForm(false);
   };
 
