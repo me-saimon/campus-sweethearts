@@ -108,16 +108,16 @@ const HowItWorksSection = () => {
       <motion.div
         animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
         transition={{ duration: 6, repeat: Infinity }}
-        className="absolute top-20 right-20 text-4xl opacity-20"
+        className="absolute top-20 right-20 opacity-10"
       >
-        💍
+        <Heart className="w-10 h-10 text-coral" />
       </motion.div>
       <motion.div
         animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
         transition={{ duration: 8, repeat: Infinity }}
-        className="absolute bottom-40 left-20 text-4xl opacity-20"
+        className="absolute bottom-40 left-20 opacity-10"
       >
-        💒
+        <UserPlus className="w-10 h-10 text-lavender" />
       </motion.div>
 
       <div className="container mx-auto px-4 relative z-10">

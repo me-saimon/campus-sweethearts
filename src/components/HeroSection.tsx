@@ -1,15 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Heart, Shield, MessageCircle, Sparkles, ArrowRight, Star } from "lucide-react";
+import { Heart, Shield, Sparkles, ArrowRight, Star, GraduationCap, Users, Building2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 
-const floatingProfiles = [
-  { name: "Aisha", uni: "DU", top: "20%", left: "8%", delay: 0, size: "w-16 h-16" },
-  { name: "Rafiq", uni: "BUET", top: "35%", right: "6%", delay: 0.5, size: "w-14 h-14" },
-  { name: "Nadia", uni: "JU", bottom: "30%", left: "5%", delay: 1, size: "w-12 h-12" },
-  { name: "Karim", uni: "CU", bottom: "20%", right: "10%", delay: 1.5, size: "w-16 h-16" },
-];
 
 const HeroSection = () => {
   const ref = useRef<HTMLElement>(null);
@@ -69,35 +63,6 @@ const HeroSection = () => {
         </motion.div>
       ))}
 
-      {/* Floating profile badges */}
-      {floatingProfiles.map((profile, i) => (
-        <motion.div
-          key={profile.name}
-          className="absolute hidden lg:flex items-center gap-2 bg-card/90 backdrop-blur-md border border-border rounded-full px-3 py-2 shadow-card"
-          style={{ top: profile.top, left: profile.left, right: (profile as any).right, bottom: (profile as any).bottom }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
-          transition={{
-            opacity: { delay: 1.5 + profile.delay, duration: 0.5 },
-            scale: { delay: 1.5 + profile.delay, duration: 0.5, type: "spring" },
-            y: { delay: 2 + profile.delay, duration: 3, repeat: Infinity, ease: "easeInOut" },
-          }}
-        >
-          <div className={`${profile.size} rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-bold text-xs`}>
-            {profile.name[0]}
-          </div>
-          <div className="pr-1">
-            <div className="text-xs font-semibold text-foreground">{profile.name}</div>
-            <div className="text-[10px] text-muted-foreground">{profile.uni}</div>
-          </div>
-          <motion.div
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-          >
-            <Heart className="w-3 h-3 text-coral fill-coral" />
-          </motion.div>
-        </motion.div>
-      ))}
 
       <motion.div style={{ y: textY, opacity }} className="relative z-10 container mx-auto px-4 text-center">
         {/* Badge */}
@@ -221,9 +186,9 @@ const HeroSection = () => {
           className="mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto"
         >
           {[
-            { number: "5,000+", label: "Active Students", icon: "👨‍🎓" },
-            { number: "500+", label: "Happy Matches", icon: "💑" },
-            { number: "100+", label: "Universities", icon: "🏛️" },
+            { number: "5,000+", label: "Active Students", icon: GraduationCap, color: "text-coral" },
+            { number: "500+", label: "Happy Matches", icon: Users, color: "text-teal" },
+            { number: "100+", label: "Universities", icon: Building2, color: "text-lavender" },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -231,7 +196,9 @@ const HeroSection = () => {
               transition={{ type: "spring", stiffness: 300 }}
               className="text-center p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-coral/30 hover:shadow-card transition-all cursor-default"
             >
-              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="flex justify-center mb-1">
+                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+              </div>
               <div className="text-xl md:text-2xl font-display font-bold text-gradient-hero">
                 {stat.number}
               </div>

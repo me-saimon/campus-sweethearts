@@ -1,33 +1,33 @@
 import { motion } from "framer-motion";
-import { Heart, Quote, Star } from "lucide-react";
+import { Heart, Quote, Star, Users, Gem, Sparkles, HeartHandshake } from "lucide-react";
 
 const testimonials = [
   {
     name: "Fatima & Ahmed",
     university: "University of Dhaka",
     quote: "We matched on UniMatch during our final year. Our families loved the transparent process. Now we're happily married!",
-    emoji: "💑",
+    icon: Users,
     rating: 5,
   },
   {
     name: "Nadia & Rafiq",
     university: "BUET",
     quote: "The guardian approval feature made everything so smooth. Both families were involved from day one.",
-    emoji: "💍",
+    icon: Gem,
     rating: 5,
   },
   {
     name: "Ayesha & Imran",
     university: "Chittagong University",
     quote: "I was skeptical at first, but the verified student system gave me confidence. Found my soulmate in just 3 months!",
-    emoji: "🥰",
+    icon: Sparkles,
     rating: 5,
   },
   {
     name: "Mariam & Hasan",
     university: "Jahangirnagar University",
     quote: "The token-based chat kept our conversations meaningful. It forced us to be genuine rather than just small talk.",
-    emoji: "❤️",
+    icon: HeartHandshake,
     rating: 5,
   },
 ];
@@ -103,8 +103,8 @@ const TestimonialsSection = () => {
               </p>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center text-lg">
-                  {testimonial.emoji}
+                <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
+                  <testimonial.icon className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-foreground flex items-center gap-1.5">
