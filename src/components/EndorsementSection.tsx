@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Users, GraduationCap, MessageSquarePlus, ChevronDown, ChevronUp, Quote, ThumbsUp } from "lucide-react";
+import { Star, Users, GraduationCap, MessageSquarePlus, ChevronDown, ChevronUp, Quote, ThumbsUp, CheckCircle, XCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
