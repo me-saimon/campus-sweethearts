@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Heart, Shield, MessageCircle, Sparkles, ArrowRight, Star } from "lucide-react";
+import { Heart, Shield, Sparkles, ArrowRight, Star, GraduationCap, Users, Building2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
