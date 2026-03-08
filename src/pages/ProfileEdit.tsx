@@ -338,12 +338,30 @@ const ProfileEdit = () => {
                   </CardTitle>
                   <CardDescription>What are you looking for?</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  <CardDescription className="text-xs">Select up to 8 preferences ({selectedPreferences.length}/8)</CardDescription>
+                  <div className="flex flex-wrap gap-2">
+                    {preferenceTags.map(tag => (
+                      <Badge
+                        key={tag}
+                        variant={selectedPreferences.includes(tag) ? "default" : "outline"}
+                        className={`cursor-pointer transition-all text-sm py-1.5 px-3 ${
+                          selectedPreferences.includes(tag)
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                            : "hover:bg-primary/10 hover:border-primary"
+                        }`}
+                        onClick={() => togglePreference(tag)}
+                      >
+                        {selectedPreferences.includes(tag) && <X className="w-3 h-3 mr-1" />}
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                   <Textarea
                     value={formData.lookingFor}
                     onChange={e => setFormData({...formData, lookingFor: e.target.value})}
-                    placeholder="Describe what you're looking for in a life partner..."
-                    className="min-h-[100px]"
+                    placeholder="Any additional preferences..."
+                    className="min-h-[80px]"
                   />
                 </CardContent>
               </Card>
