@@ -6,7 +6,7 @@ const testimonials = [
     name: "Fatima & Ahmed",
     university: "University of Dhaka",
     quote: "We matched on UniMatch during our final year. Our families loved the transparent process. Now we're happily married!",
-    emoji: "💑",
+    icon: Users,
     rating: 5,
   },
   {
