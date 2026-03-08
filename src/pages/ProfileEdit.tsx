@@ -34,7 +34,7 @@ const ProfileEdit = () => {
   const [formData, setFormData] = useState({
     name: "Rafiq Ahmed",
     age: "24",
-    university: "BUET",
+    university: "Bangladesh University of Engineering & Technology",
     department: "Computer Science",
     year: "Masters",
     location: "Dhaka",
