@@ -41,11 +41,13 @@ const ProfileEdit = () => {
     religion: "Islam",
     lookingFor: "Someone kind, educated, and family-oriented",
     bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
+    college: "",
     guardianName: "Mr. Ahmed Hossain",
     guardianEmail: "guardian@example.com",
     guardianPhone: "+880171XXXXXXX",
     guardianRelation: "Father",
   });
+  const [showCollege, setShowCollege] = useState(false);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([
     "Technology", "Cricket", "Photography", "Hiking"
