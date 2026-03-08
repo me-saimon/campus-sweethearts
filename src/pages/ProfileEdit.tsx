@@ -40,6 +40,48 @@ const femalePreferenceTags = [
   "Good with Kids", "Financially Stable", "Humble"
 ];
 
+const medicalColleges = [
+  "Dhaka Medical College",
+  "Sir Salimullah Medical College",
+  "Shaheed Suhrawardy Medical College",
+  "Mymensingh Medical College",
+  "Sher-E-Bangla Medical College, Barishal",
+  "Rangpur Medical College",
+  "Rajshahi Medical College",
+  "Dinajpur Medical College",
+  "Cumilla Medical College",
+  "Chattagram Medical College",
+  "Noakhali Medical College",
+  "Sunamganj Medical College",
+  "Faridpur Medical College",
+  "Chandpur Medical College",
+  "Manikganj Medical College",
+  "Cox's Bazar Medical College",
+  "Dhaka Dental College",
+  "Jeshore Medical College",
+  "Khulna Medical College",
+  "Kustia Medical College",
+  "Magura Medical College",
+  "Mugda Medical College",
+  "Naogaon Medical College",
+  "Netrokona Medical College",
+  "Nilphamari Medical College",
+  "Pabna Medical College",
+  "Patuakhali Medical College",
+  "Rangamati Medical College",
+  "Satkhira Medical College",
+  "Shaheed M Monsur Ali Medical College, Sirajganj",
+  "Shaheed Taj Uddin Ahmad Medical College, Gazipur",
+  "Shaheed Ziaur Rahman Medical College, Bogura",
+  "Shahid Syed Nazrul Islam Medical College, Kishoreganj",
+  "Habiganj Medical College",
+  "Jamalpur Medical College",
+  "Tangail Medical College",
+  "Gopalganj Medical College",
+  "Sylhet MAG Osmani Medical College",
+  "Armed Forces Medical College, Dhaka",
+];
+
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
