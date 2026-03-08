@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield, Star } from "lucide-react";
+import { Heart, MapPin, GraduationCap, BookOpen, Eye, Shield, Star, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StudentProfile } from "@/data/mockProfiles";
 import { useState } from "react";
