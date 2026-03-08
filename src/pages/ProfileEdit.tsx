@@ -31,6 +31,7 @@ const interestOptions = [
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
+  const [formData, setFormData] = useState({
     name: "Rafiq Ahmed",
     age: "24",
     university: "BUET",
