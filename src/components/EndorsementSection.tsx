@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Users, GraduationCap, MessageSquarePlus, ChevronDown, ChevronUp, Quote, ThumbsUp } from "lucide-react";
+import { Star, Users, GraduationCap, MessageSquarePlus, ChevronDown, ChevronUp, Quote, ThumbsUp, CheckCircle, XCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,46 @@ interface EndorsementSectionProps {
   profileName: string;
   profileUniversity: string;
   profileDepartment: string;
+  profileYear: string;
 }
+
+type EligibilityMatch = {
+  eligible: boolean;
+  relationship: Endorsement["relationship"] | null;
+  matchDetails: string[];
+};
+
+const getEligibility = (
+  university: string,
+  department: string,
+  year: string,
+  profileUniversity: string,
+  profileDepartment: string,
+  profileYear: string
+): EligibilityMatch => {
+  const uniMatch = university.trim().toLowerCase() === profileUniversity.toLowerCase();
+  const deptMatch = department.trim().toLowerCase() === profileDepartment.toLowerCase();
+  const yearMatch = year.trim().toLowerCase() === profileYear.toLowerCase();
+
+  if (!uniMatch) return { eligible: false, relationship: null, matchDetails: ["University doesn't match"] };
+
+  const matches: string[] = [];
+  let relationship: Endorsement["relationship"] = "university_peer";
+
+  if (uniMatch) matches.push("Same university");
+  if (deptMatch && yearMatch) {
+    relationship = "classmate";
+    matches.push("Same department", "Same batch");
+  } else if (yearMatch) {
+    relationship = "batchmate";
+    matches.push("Same batch");
+  } else if (deptMatch) {
+    relationship = "department_peer";
+    matches.push("Same department");
+  }
+
+  return { eligible: true, relationship, matchDetails: matches };
+};
 
 const relationshipLabels: Record<Endorsement["relationship"], string> = {
   classmate: "Classmate",
@@ -63,10 +102,12 @@ const InteractiveStarRating = ({ rating, onRate }: { rating: number; onRate: (r:
   );
 };
 
-const EndorsementSection = ({ endorsements, profileName, profileUniversity, profileDepartment }: EndorsementSectionProps) => {
+const EndorsementSection = ({ endorsements, profileName, profileUniversity, profileDepartment, profileYear }: EndorsementSectionProps) => {
   const [showForm, setShowForm] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const [formData, setFormData] = useState({ name: "", department: "", year: "", comment: "", rating: 0 });
+  const [formData, setFormData] = useState({ name: "", university: "", department: "", year: "", comment: "", rating: 0 });
+
+  const eligibility = getEligibility(formData.university, formData.department, formData.year, profileUniversity, profileDepartment, profileYear);
 
   const avgRating = endorsements.length > 0
     ? (endorsements.reduce((sum, e) => sum + e.rating, 0) / endorsements.length).toFixed(1)
@@ -76,14 +117,18 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.comment || formData.rating === 0) {
+    if (!formData.name || !formData.university || !formData.comment || formData.rating === 0) {
       toast.error("Please fill in all required fields and give a rating.");
       return;
     }
+    if (!eligibility.eligible) {
+      toast.error("You must be from the same university to endorse this profile.");
+      return;
+    }
     toast.success("JazakAllahu Khairan! Your endorsement has been submitted.", {
-      description: "It will appear after verification by our team.",
+      description: `Tagged as "${eligibility.relationship ? relationshipLabels[eligibility.relationship] : "Peer"}". It will appear after verification.`,
     });
-    setFormData({ name: "", department: "", year: "", comment: "", rating: 0 });
+    setFormData({ name: "", university: "", department: "", year: "", comment: "", rating: 0 });
     setShowForm(false);
   };
 
@@ -211,13 +256,20 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
               </div>
 
               <p className="text-[10px] text-muted-foreground leading-relaxed">
-                Only peers from <span className="font-semibold text-foreground">{profileUniversity}</span> or <span className="font-semibold text-foreground">{profileDepartment}</span> can endorse this profile.
+                Enter your university details — the system will automatically verify your eligibility to endorse.
               </p>
 
               <Input
                 placeholder="Your name *"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="h-9 text-xs rounded-xl bg-card"
+              />
+
+              <Input
+                placeholder="Your university *"
+                value={formData.university}
+                onChange={(e) => setFormData({ ...formData, university: e.target.value })}
                 className="h-9 text-xs rounded-xl bg-card"
               />
 
@@ -236,6 +288,49 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
                 />
               </div>
 
+              {/* Eligibility indicator */}
+              {formData.university.trim() && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
+                    eligibility.eligible
+                      ? "bg-primary/5 border-primary/15"
+                      : "bg-destructive/5 border-destructive/15"
+                  }`}
+                >
+                  {eligibility.eligible ? (
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <XCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+                  )}
+                  <div>
+                    <p className={`font-semibold ${eligibility.eligible ? "text-primary" : "text-destructive"}`}>
+                      {eligibility.eligible ? "Eligible to endorse" : "Not eligible"}
+                    </p>
+                    {eligibility.eligible && eligibility.relationship && (
+                      <p className="text-muted-foreground mt-0.5">
+                        Auto-tagged as: <span className={`inline-block px-1.5 py-0.5 rounded-full text-[9px] font-medium border ml-1 ${relationshipColors[eligibility.relationship]}`}>
+                          {relationshipLabels[eligibility.relationship]}
+                        </span>
+                      </p>
+                    )}
+                    {eligibility.eligible && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {eligibility.matchDetails.map((m) => (
+                          <span key={m} className="text-[9px] text-primary/70 bg-primary/5 px-1.5 py-0.5 rounded">✓ {m}</span>
+                        ))}
+                      </div>
+                    )}
+                    {!eligibility.eligible && (
+                      <p className="text-muted-foreground mt-0.5">
+                        Must be from <span className="font-semibold text-foreground">{profileUniversity}</span> to endorse.
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
               <div>
                 <p className="text-[10px] text-muted-foreground mb-1.5">Your rating *</p>
                 <InteractiveStarRating rating={formData.rating} onRate={(r) => setFormData({ ...formData, rating: r })} />
@@ -246,13 +341,20 @@ const EndorsementSection = ({ endorsements, profileName, profileUniversity, prof
                 value={formData.comment}
                 onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                 className="text-xs rounded-xl bg-card min-h-[72px] resize-none"
+                disabled={!eligibility.eligible && formData.university.trim().length > 0}
               />
 
               <div className="flex gap-2">
                 <Button type="button" variant="ghost" size="sm" className="flex-1 rounded-xl text-xs h-9" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" variant="hero" size="sm" className="flex-1 rounded-xl text-xs h-9 gap-1.5">
+                <Button
+                  type="submit"
+                  variant="hero"
+                  size="sm"
+                  className="flex-1 rounded-xl text-xs h-9 gap-1.5"
+                  disabled={!eligibility.eligible && formData.university.trim().length > 0}
+                >
                   <MessageSquarePlus className="w-3 h-3" />
                   Submit
                 </Button>
