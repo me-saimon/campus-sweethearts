@@ -143,7 +143,18 @@ const ProfileEdit = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-24 pb-16">
+      
+      {/* Islamic green hero background */}
+      <div className="relative pt-24 pb-16">
+        <div className="absolute inset-0 bg-gradient-islamic opacity-90 h-72" />
+        <div className="absolute inset-0 islamic-pattern h-72" />
+        <div className="absolute inset-0 h-72 overflow-hidden">
+          <div className="absolute top-6 left-12 text-secondary/30 text-3xl">☪</div>
+          <div className="absolute top-10 right-16 text-secondary/20 text-2xl">☪</div>
+          <div className="absolute bottom-8 right-10 text-secondary/25 text-xl">☪</div>
+        </div>
+      
+      <div className="relative">
         <div className="container mx-auto px-4 max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -552,6 +563,7 @@ const ProfileEdit = () => {
             </motion.div>
           </div>
         </div>
+      </div>
       </div>
       <Footer />
     </div>
