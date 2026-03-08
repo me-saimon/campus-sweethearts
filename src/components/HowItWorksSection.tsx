@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { UserPlus, Search, MessageCircle, Heart, Mail, Infinity, Check } from "lucide-react";
+import { UserPlus, Search, MessageCircle, Heart, Mail, Infinity as InfinityIcon, Check } from "lucide-react";
 import { useRef } from "react";
 
 const steps = [
