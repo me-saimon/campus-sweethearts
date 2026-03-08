@@ -564,6 +564,7 @@ const ProfileEdit = () => {
           </div>
         </div>
       </div>
+      </div>
       <Footer />
     </div>
   );
