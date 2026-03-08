@@ -102,7 +102,11 @@ const ProfileEdit = () => {
     guardianEmail: "guardian@example.com",
     guardianPhone: "+880171XXXXXXX",
     guardianRelation: "Father",
+    medicalCollege: "",
   });
+
+  const [isMedicalStudent, setIsMedicalStudent] = useState(false);
+  const [medCollegeOpen, setMedCollegeOpen] = useState(false);
 
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Educated", "Family-oriented"]);
 
