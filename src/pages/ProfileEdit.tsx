@@ -46,12 +46,13 @@ const ProfileEdit = () => {
   const [formData, setFormData] = useState({
     name: "Rafiq Ahmed",
     age: "24",
+    gender: "Male",
     university: "Bangladesh University of Engineering & Technology",
     department: "Computer Science",
     year: "Masters",
     location: "Dhaka",
     religion: "Islam",
-    lookingFor: "Someone kind, educated, and family-oriented",
+    lookingFor: "",
     bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
     college: "",
     guardianName: "Mr. Ahmed Hossain",
@@ -59,6 +60,18 @@ const ProfileEdit = () => {
     guardianPhone: "+880171XXXXXXX",
     guardianRelation: "Father",
   });
+
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Educated", "Family-oriented"]);
+
+  const preferenceTags = formData.gender === "Male" ? malePreferenceTags : femalePreferenceTags;
+
+  const togglePreference = (tag: string) => {
+    setSelectedPreferences(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : prev.length < 8 ? [...prev, tag] : prev
+    );
+  };
   const [showCollege, setShowCollege] = useState(false);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([
