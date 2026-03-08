@@ -25,6 +25,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/browse" element={<BrowseProfiles />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/profile/preview" element={<ProfilePreview />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
