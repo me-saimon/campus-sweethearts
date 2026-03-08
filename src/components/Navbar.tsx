@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, X, MessageCircle, User } from "lucide-react";
+import { Menu, X, MessageCircle, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const CrescentStar = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 64 64" fill="currentColor" className={className}>
+    <path d="M32 4C17.64 4 6 15.64 6 30s11.64 26 26 26c4.56 0 8.86-1.18 12.6-3.24A22 22 0 0 1 20 30a22 22 0 0 1 24.6-21.76C41.86 5.18 37.56 4 33 4h-1z" />
+    <path d="M48 14l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" />
+  </svg>
+);
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,15 +25,14 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-full bg-gradient-hero flex items-center justify-center">
-            <Heart className="w-5 h-5 text-primary-foreground fill-current" />
+          <div className="w-9 h-9 rounded-full bg-gradient-islamic flex items-center justify-center">
+            <CrescentStar className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-display font-bold text-foreground">
             Uni<span className="text-gradient-hero">Match</span>
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
@@ -50,7 +56,6 @@ const Navbar = () => {
           </Button>
         </div>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="md:hidden p-2 text-foreground"
@@ -59,7 +64,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
