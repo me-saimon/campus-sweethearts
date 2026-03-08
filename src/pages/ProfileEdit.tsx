@@ -28,6 +28,18 @@ const interestOptions = [
   "Medicine", "Business", "Engineering", "Nature"
 ];
 
+const malePreferenceTags = [
+  "Into Cooking", "Be a Housewife", "Will Work if Needed", "Travelling",
+  "Knitting", "Religious", "Family-oriented", "Educated", "Caring",
+  "Modest", "Creative", "Supportive", "Health-conscious"
+];
+
+const femalePreferenceTags = [
+  "Provider", "Religious", "Family-oriented", "Educated", "Ambitious",
+  "Caring", "Respectful", "Supportive", "Honest", "Health-conscious",
+  "Good with Kids", "Financially Stable", "Humble"
+];
+
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
