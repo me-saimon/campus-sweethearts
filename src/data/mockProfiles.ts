@@ -1,3 +1,15 @@
+export interface Endorsement {
+  id: string;
+  endorserName: string;
+  endorserUniversity: string;
+  endorserDepartment: string;
+  endorserYear: string;
+  relationship: "classmate" | "batchmate" | "department_peer" | "university_peer";
+  rating: number; // 1-5
+  comment: string;
+  date: string;
+}
+
 export interface StudentProfile {
   id: string;
   name: string;
@@ -11,6 +23,7 @@ export interface StudentProfile {
   location: string;
   religion: string;
   lookingFor: string;
+  endorsements: Endorsement[];
 }
 
 export const mockProfiles: StudentProfile[] = [
