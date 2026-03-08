@@ -163,7 +163,27 @@
     background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.15'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Cpath d='M40 20L60 40L40 60L20 40Z'/%3E%3Cpath d='M0 0L40 0L40 40L0 40Z'/%3E%3Cpath d='M40 0L80 0L80 40L40 40Z'/%3E%3Cpath d='M0 40L40 40L40 80L0 80Z'/%3E%3Cpath d='M40 40L80 40L80 80L40 80Z'/%3E%3C/g%3E%3C/svg%3E");
   }
 
+  /* Islamic arabesque vector pattern - more ornate */
+  .islamic-arabesque {
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232e7d5b' stroke-width='0.4' opacity='0.08'%3E%3Ccircle cx='60' cy='60' r='50'/%3E%3Ccircle cx='60' cy='60' r='35'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Cpath d='M60 10 L60 110'/%3E%3Cpath d='M10 60 L110 60'/%3E%3Cpath d='M60 10 Q85 35 60 60 Q35 85 60 110'/%3E%3Cpath d='M60 10 Q35 35 60 60 Q85 85 60 110'/%3E%3Cpath d='M10 60 Q35 35 60 60 Q85 85 110 60'/%3E%3Cpath d='M10 60 Q35 85 60 60 Q85 35 110 60'/%3E%3Cpath d='M25 25 L95 95'/%3E%3Cpath d='M95 25 L25 95'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Islamic star pattern */
+  .islamic-stars {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.3' opacity='0.1'%3E%3Cpolygon points='50,5 61,35 95,35 68,55 79,85 50,67 21,85 32,55 5,35 39,35'/%3E%3Ccircle cx='50' cy='50' r='45'/%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Cpath d='M50 5 L50 95 M5 50 L95 50 M20 20 L80 80 M80 20 L20 80'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Mosque dome silhouette decoration */
+  .islamic-mosque-bg {
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='100' viewBox='0 0 200 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232e7d5b' opacity='0.03'%3E%3Cpath d='M0 100 L0 70 Q25 30 50 70 L50 100Z'/%3E%3Cpath d='M50 100 L50 60 Q75 15 100 60 L100 100Z'/%3E%3Cpath d='M100 100 L100 70 Q125 30 150 70 L150 100Z'/%3E%3Cpath d='M150 100 L150 60 Q175 15 200 60 L200 100Z'/%3E%3Crect x='23' y='30' width='4' height='20' rx='2'/%3E%3Crect x='73' y='15' width='4' height='25' rx='2'/%3E%3Crect x='123' y='30' width='4' height='20' rx='2'/%3E%3Crect x='173' y='15' width='4' height='25' rx='2'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
   .islamic-border {
     border-image: linear-gradient(135deg, hsl(42 85% 52%), hsl(158 65% 28%), hsl(42 85% 52%)) 1;
+  }
+
+  /* Lantern glow effect */
+  .lantern-glow {
+    filter: drop-shadow(0 0 12px hsl(42 85% 52% / 0.3));
   }
 }
