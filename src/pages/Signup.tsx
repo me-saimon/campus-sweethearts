@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart, Mail, Lock, User, GraduationCap, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,33 +8,60 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Signup = () => {
-  const { toast } = useToast();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "", email: "", password: "", gender: "", university: "", department: "",
   });
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 1) {
-      setStep(2);
-      return;
+    if (step === 1) { setStep(2); return; }
+
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          name: formData.name,
+          gender: formData.gender,
+          university: formData.university,
+          department: formData.department,
+        },
+      },
+    });
+    setLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      // Update profile with extra data
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({
+          name: formData.name,
+          gender: formData.gender,
+          university: formData.university,
+          department: formData.department,
+        }).eq("user_id", user.id);
+      }
+      toast.success("Account Created! 🎉", { description: "Welcome to UniMatch!" });
+      navigate("/dashboard");
     }
-    toast({ title: "Account Created! 🎉", description: "Let's set up your profile." });
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative z-10"
-      >
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
             <div className="w-12 h-12 rounded-full bg-gradient-hero flex items-center justify-center">
@@ -43,7 +70,6 @@ const Signup = () => {
           </Link>
           <h1 className="text-3xl font-display font-bold mt-4">Join UniMatch</h1>
           <p className="text-muted-foreground mt-1">Create your account in 2 simple steps</p>
-          {/* Step indicator */}
           <div className="flex items-center justify-center gap-2 mt-4">
             <div className={`h-2 w-12 rounded-full transition-colors ${step >= 1 ? "bg-primary" : "bg-muted"}`} />
             <div className={`h-2 w-12 rounded-full transition-colors ${step >= 2 ? "bg-primary" : "bg-muted"}`} />
@@ -114,12 +140,10 @@ const Signup = () => {
 
               <div className="flex gap-3">
                 {step === 2 && (
-                  <Button type="button" variant="outline" size="lg" className="flex-1" onClick={() => setStep(1)}>
-                    Back
-                  </Button>
+                  <Button type="button" variant="outline" size="lg" className="flex-1" onClick={() => setStep(1)}>Back</Button>
                 )}
-                <Button type="submit" variant="hero" size="lg" className="flex-1">
-                  {step === 1 ? "Next Step" : "Create Account"}
+                <Button type="submit" variant="hero" size="lg" className="flex-1" disabled={loading}>
+                  {loading ? "Creating..." : step === 1 ? "Next Step" : "Create Account"}
                 </Button>
               </div>
             </form>

@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, MapPin, GraduationCap, BookOpen, MessageCircle, Send, Shield, Star, User, Clock, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { X, Heart, MapPin, GraduationCap, MessageCircle, Send, Shield, Star, User, Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StudentProfile } from "@/data/mockProfiles";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { CrescentStar, Lantern, IslamicFrame } from "@/components/IslamicVectors";
 import { useState } from "react";
 import EndorsementSection from "@/components/EndorsementSection";
+import { useAuth } from "@/hooks/useAuth";
+import { useSendInterest, useSentInterests } from "@/hooks/useInterestRequests";
 
 interface ProfileDetailModalProps {
   profile: StudentProfile;
@@ -25,14 +27,36 @@ const avatarGradients = [
 const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
+  const { user } = useAuth();
+  const sendInterest = useSendInterest();
+  const { data: sentInterests } = useSentInterests();
   const gradientIndex = parseInt(profile.id) % avatarGradients.length;
   const gradient = avatarGradients[gradientIndex];
 
+  const alreadySent = sentInterests?.some((r) => r.to_user_id === profile.id);
+
   const handleShowInterest = () => {
-    toast.success("MashaAllah! Interest shown successfully!", {
-      description: "A proposal notification will be sent to their guardian. ৳500 fee applies.",
+    if (!user) {
+      toast.error("Please log in first to show interest.");
+      navigate("/login");
+      onClose();
+      return;
+    }
+    if (alreadySent) {
+      toast.info("You've already shown interest in this profile.");
+      return;
+    }
+    sendInterest.mutate(profile.id, {
+      onSuccess: () => {
+        toast.success("MashaAllah! Interest shown successfully!", {
+          description: "A proposal notification will be sent to them. ৳500 fee applies.",
+        });
+        onClose();
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to send interest.");
+      },
     });
-    onClose();
   };
 
   const handleChat = () => {
@@ -65,25 +89,19 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
         onClick={(e) => e.stopPropagation()}
         className="bg-card rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-border relative"
       >
-        {/* ─── Header ─── */}
+        {/* Header */}
         <div className={`bg-gradient-to-br ${gradient} p-8 rounded-t-3xl relative overflow-hidden`}>
           <div className="absolute inset-0 islamic-pattern opacity-20" />
           <div className="absolute inset-0 islamic-arabesque opacity-40" />
-
-          {/* Floating decorations */}
           <motion.div animate={{ y: [0, -6, 0], rotate: [0, 12, 0] }} transition={{ duration: 5, repeat: Infinity }} className="absolute top-4 right-20">
             <CrescentStar className="w-6 h-6 text-primary-foreground/15" />
           </motion.div>
           <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 6, repeat: Infinity, delay: 1.5 }} className="absolute bottom-6 left-6">
             <Lantern className="w-4 h-7 text-primary-foreground/10" />
           </motion.div>
-
-          {/* Close button */}
           <button onClick={onClose} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary-foreground/15 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/25 transition-all z-10">
             <X className="w-4 h-4" />
           </button>
-
-          {/* Like button */}
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.85 }}
@@ -92,21 +110,13 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
           >
             <Heart className={`w-4 h-4 transition-all duration-300 ${isLiked ? 'text-accent fill-accent' : 'text-primary-foreground'}`} />
           </motion.button>
-
-          {/* Avatar centered */}
           <div className="relative z-10 flex flex-col items-center pt-2">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", delay: 0.1 }}
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.1 }}
               className="w-24 h-24 rounded-full bg-card border-4 border-card/50 flex items-center justify-center shadow-xl relative overflow-hidden mb-4"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-15`} />
-              <span className="text-3xl font-display font-bold text-gradient-hero relative z-10">
-                {profile.name.charAt(0)}
-              </span>
+              <span className="text-3xl font-display font-bold text-gradient-hero relative z-10">{profile.name.charAt(0)}</span>
             </motion.div>
-
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <h2 className="text-2xl font-display font-bold text-primary-foreground">{profile.name}</h2>
@@ -117,19 +127,11 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
               <p className="text-primary-foreground/70 text-sm">{profile.age} years old</p>
             </div>
           </div>
-
-          {/* Arch bottom */}
           <div className="absolute -bottom-px left-0 right-0 h-6 bg-card rounded-t-[2rem]" />
         </div>
 
-        {/* ─── Body ─── */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="px-6 pb-6 pt-2 space-y-5"
-        >
-          {/* Quick stats row */}
+        {/* Body */}
+        <motion.div variants={stagger} initial="hidden" animate="visible" className="px-6 pb-6 pt-2 space-y-5">
           <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3">
             <div className="text-center p-3 rounded-2xl bg-primary/5 border border-primary/8">
               <MapPin className="w-4 h-4 text-primary mx-auto mb-1" />
@@ -148,11 +150,8 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
             </div>
           </motion.div>
 
-          {/* Education */}
           <motion.div variants={fadeUp} className="p-4 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/8 relative overflow-hidden">
-            <div className="absolute top-2 right-2 opacity-5">
-              <IslamicFrame className="w-16 h-16 text-primary" />
-            </div>
+            <div className="absolute top-2 right-2 opacity-5"><IslamicFrame className="w-16 h-16 text-primary" /></div>
             <div className="flex items-start gap-3 relative z-10">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <GraduationCap className="w-5 h-5 text-primary" />
@@ -164,7 +163,6 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
             </div>
           </motion.div>
 
-          {/* Looking For */}
           <motion.div variants={fadeUp} className="p-4 rounded-2xl bg-rose/5 border border-rose/8">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-rose/10 flex items-center justify-center flex-shrink-0">
@@ -177,30 +175,20 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
             </div>
           </motion.div>
 
-          {/* Bio / About */}
           <motion.div variants={fadeUp}>
             <h3 className="text-sm font-display font-bold mb-2 flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-accent" />
-              About
+              <Sparkles className="w-3.5 h-3.5 text-accent" /> About
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed bg-muted/30 rounded-xl p-4 border border-border">
-              {profile.bio}
-            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed bg-muted/30 rounded-xl p-4 border border-border">{profile.bio}</p>
           </motion.div>
 
-          {/* Interests */}
           <motion.div variants={fadeUp}>
             <h3 className="text-sm font-display font-bold mb-3 flex items-center gap-2">
-              <Star className="w-3.5 h-3.5 text-accent" />
-              Interests
+              <Star className="w-3.5 h-3.5 text-accent" /> Interests
             </h3>
             <div className="flex flex-wrap gap-2">
               {profile.interests.map((interest, i) => (
-                <motion.span
-                  key={interest}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + i * 0.05, type: "spring" }}
+                <motion.span key={interest} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.05, type: "spring" }}
                   className="text-xs px-4 py-2 rounded-full bg-primary/8 text-primary font-medium border border-primary/10 hover:bg-primary/15 transition-colors cursor-default"
                 >
                   {interest}
@@ -209,42 +197,37 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
             </div>
           </motion.div>
 
-          {/* Endorsements */}
           <motion.div variants={fadeUp}>
-            <EndorsementSection
-              endorsements={profile.endorsements}
-              profileName={profile.name}
-              profileUniversity={profile.university}
-              profileDepartment={profile.department}
-              profileYear={profile.year}
-            />
+            <EndorsementSection endorsements={profile.endorsements} profileName={profile.name} profileUniversity={profile.university} profileDepartment={profile.department} profileYear={profile.year} />
           </motion.div>
 
-          {/* Divider with Islamic touch */}
           <motion.div variants={fadeUp} className="flex items-center gap-3 py-1">
             <div className="flex-1 h-px bg-border" />
             <CrescentStar className="w-4 h-4 text-primary/20" />
             <div className="flex-1 h-px bg-border" />
           </motion.div>
 
-          {/* Action buttons */}
           <motion.div variants={fadeUp} className="flex gap-3">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
               <Button variant="outline" className="w-full rounded-xl h-12 border-primary/20 hover:bg-primary/10 gap-2" onClick={handleChat}>
-                <MessageCircle className="w-4 h-4" />
-                Start Chat
+                <MessageCircle className="w-4 h-4" /> Start Chat
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
-              <Button variant="hero" className="w-full rounded-xl h-12 gap-2" onClick={handleShowInterest}>
+              <Button
+                variant="hero"
+                className="w-full rounded-xl h-12 gap-2"
+                onClick={handleShowInterest}
+                disabled={sendInterest.isPending || alreadySent}
+              >
                 <Send className="w-4 h-4" />
-                Show Interest
+                {alreadySent ? "Interest Sent ✓" : "Show Interest"}
               </Button>
             </motion.div>
           </motion.div>
 
           <p className="text-[11px] text-center text-muted-foreground">
-            Showing interest sends a halal proposal to guardians · ৳500 fee applies
+            Showing interest sends a halal proposal notification · ৳500 fee applies
           </p>
         </motion.div>
       </motion.div>
