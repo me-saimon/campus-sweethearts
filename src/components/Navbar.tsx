@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, MessageCircle, Moon } from "lucide-react";
+import { Menu, X, MessageCircle, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
+import { usePendingCount } from "@/hooks/useInterestRequests";
 
 const CrescentStar = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 64 64" fill="currentColor" className={className}>
@@ -14,6 +16,8 @@ const CrescentStar = ({ className }: { className?: string }) => (
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { data: pendingCount } = usePendingCount();
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -48,18 +52,36 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/login">Log In</Link>
-          </Button>
-          <Button variant="hero" size="default" asChild>
-            <Link to="/signup">Get Started</Link>
-          </Button>
+          {user ? (
+            <>
+              <Link to="/notifications" className="relative p-2 hover:bg-muted rounded-full transition-colors">
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                {(pendingCount ?? 0) > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-destructive text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={signOut}>
+                Log Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/login">Log In</Link>
+              </Button>
+              <Button variant="hero" size="default" asChild>
+                <Link to="/signup">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-foreground"
-        >
+        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 text-foreground">
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -85,13 +107,40 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              {user && (
+                <Link
+                  to="/notifications"
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium py-2 text-muted-foreground flex items-center gap-2"
+                >
+                  Notifications
+                  {(pendingCount ?? 0) > 0 && (
+                    <span className="w-5 h-5 rounded-full bg-destructive text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                      {pendingCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" size="sm" className="flex-1" asChild>
-                  <Link to="/login">Log In</Link>
-                </Button>
-                <Button variant="hero" size="sm" className="flex-1" asChild>
-                  <Link to="/signup">Get Started</Link>
-                </Button>
+                {user ? (
+                  <>
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </Button>
+                    <Button variant="hero" size="sm" className="flex-1" onClick={() => { signOut(); setIsOpen(false); }}>
+                      Log Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <Link to="/login">Log In</Link>
+                    </Button>
+                    <Button variant="hero" size="sm" className="flex-1" asChild>
+                      <Link to="/signup">Get Started</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
