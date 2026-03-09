@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      interest_requests: {
+        Row: {
+          created_at: string
+          from_user_id: string
+          id: string
+          status: string
+          to_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_user_id: string
+          id?: string
+          status?: string
+          to_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          status?: string
+          to_user_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          department: string | null
+          gender: string | null
+          id: string
+          interests: string[] | null
+          location: string | null
+          looking_for: string | null
+          name: string
+          religion: string | null
+          university: string | null
+          updated_at: string
+          user_id: string
+          year: string | null
+        }
+        Insert: {
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          gender?: string | null
+          id?: string
+          interests?: string[] | null
+          location?: string | null
+          looking_for?: string | null
+          name?: string
+          religion?: string | null
+          university?: string | null
+          updated_at?: string
+          user_id: string
+          year?: string | null
+        }
+        Update: {
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          gender?: string | null
+          id?: string
+          interests?: string[] | null
+          location?: string | null
+          looking_for?: string | null
+          name?: string
+          religion?: string | null
+          university?: string | null
+          updated_at?: string
+          user_id?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
