@@ -157,6 +157,7 @@ const ProfileEdit = () => {
     );
   };
 
+  const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
