@@ -3,6 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useEffect } from "react";
 
+interface Message {
+  id: string;
+  sender_id: string;
+  receiver_id: string;
+  text: string;
+  created_at: string;
+}
+
 export const useMessages = (otherUserId: string | undefined) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -12,18 +20,17 @@ export const useMessages = (otherUserId: string | undefined) => {
     enabled: !!user && !!otherUserId,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("messages")
+        .from("messages" as any)
         .select("*")
         .or(
           `and(sender_id.eq.${user!.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user!.id})`
         )
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return data;
+      return (data || []) as Message[];
     },
   });
 
-  // Realtime subscription
   useEffect(() => {
     if (!user || !otherUserId) return;
 
@@ -31,11 +38,7 @@ export const useMessages = (otherUserId: string | undefined) => {
       .channel(`chat:${user.id}:${otherUserId}`)
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-        },
+        { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
           const msg = payload.new as any;
           if (
@@ -63,8 +66,8 @@ export const useSendMessage = () => {
   return useMutation({
     mutationFn: async ({ receiverId, text }: { receiverId: string; text: string }) => {
       const { error } = await supabase
-        .from("messages")
-        .insert({ sender_id: user!.id, receiver_id: receiverId, text });
+        .from("messages" as any)
+        .insert({ sender_id: user!.id, receiver_id: receiverId, text } as any);
       if (error) throw error;
     },
     onSuccess: (_, vars) => {
@@ -81,7 +84,6 @@ export const useChatContacts = () => {
     queryKey: ["chat-contacts", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      // Get all accepted interest requests involving this user
       const { data: accepted, error } = await supabase
         .from("interest_requests")
         .select("from_user_id, to_user_id")
@@ -90,31 +92,28 @@ export const useChatContacts = () => {
       if (error) throw error;
       if (!accepted || accepted.length === 0) return [];
 
-      // Get unique other user IDs
       const otherIds = [...new Set(
         accepted.map((r) =>
           r.from_user_id === user!.id ? r.to_user_id : r.from_user_id
         )
       )];
 
-      // Get profiles
       const { data: profiles, error: pErr } = await supabase
         .from("profiles")
         .select("*")
         .in("user_id", otherIds);
       if (pErr) throw pErr;
 
-      // Get last message for each contact
       const contacts = await Promise.all(
         (profiles || []).map(async (profile) => {
           const { data: lastMsg } = await supabase
-            .from("messages")
+            .from("messages" as any)
             .select("text, created_at, sender_id")
             .or(
               `and(sender_id.eq.${user!.id},receiver_id.eq.${profile.user_id}),and(sender_id.eq.${profile.user_id},receiver_id.eq.${user!.id})`
             )
             .order("created_at", { ascending: false })
-            .limit(1);
+            .limit(1) as any;
 
           return {
             userId: profile.user_id,
