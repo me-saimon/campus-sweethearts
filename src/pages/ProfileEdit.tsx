@@ -257,15 +257,30 @@ const ProfileEdit = () => {
                   <div className="flex flex-col items-center gap-4">
                     <div className="relative group">
                       <Avatar className="w-28 h-28 ring-4 ring-primary/20">
+                        {myProfile?.avatar_url ? (
+                          <AvatarImage src={myProfile.avatar_url} />
+                        ) : null}
                         <AvatarFallback className="bg-gradient-hero text-primary-foreground text-3xl font-display">
-                          RA
+                          {(formData.name || "U").charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <button className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform"
+                      >
                         <Camera className="w-4 h-4" />
                       </button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handlePhotoUpload}
+                      />
                     </div>
-                    <p className="text-sm text-muted-foreground">Click to upload your photo</p>
+                    <p className="text-sm text-muted-foreground">
+                      {uploadAvatar.isPending ? "Uploading..." : "Click to upload your photo"}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
