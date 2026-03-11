@@ -155,8 +155,8 @@ const ProfileEdit = () => {
         ? prev.filter(t => t !== tag)
         : prev.length < 8 ? [...prev, tag] : prev
     );
+  };
 
-  const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
