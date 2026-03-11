@@ -114,6 +114,11 @@ const ProfileEdit = () => {
   });
 
   const [initialized, setInitialized] = useState(false);
+  const [isMedicalStudent, setIsMedicalStudent] = useState(false);
+  const [medCollegeOpen, setMedCollegeOpen] = useState(false);
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+  const [showCollege, setShowCollege] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   useEffect(() => {
     if (myProfile && !initialized) {
@@ -142,11 +147,6 @@ const ProfileEdit = () => {
 
   if (!authLoading && !user) return <Navigate to="/login" />;
 
-  const [isMedicalStudent, setIsMedicalStudent] = useState(false);
-  const [medCollegeOpen, setMedCollegeOpen] = useState(false);
-
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
-
   const preferenceTags = formData.gender === "Male" ? malePreferenceTags : femalePreferenceTags;
 
   const togglePreference = (tag: string) => {
@@ -155,10 +155,6 @@ const ProfileEdit = () => {
         ? prev.filter(t => t !== tag)
         : prev.length < 8 ? [...prev, tag] : prev
     );
-  };
-  const [showCollege, setShowCollege] = useState(false);
-
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
