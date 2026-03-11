@@ -88,29 +88,64 @@ const medicalColleges = [
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const { data: myProfile, isLoading: profileLoading } = useMyProfile();
+  const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
-    name: "Rafiq Ahmed",
-    age: "24",
-    gender: "Male",
-    university: "Bangladesh University of Engineering & Technology",
-    department: "Computer Science",
-    year: "Masters",
-    location: "Dhaka",
+    name: "",
+    age: "",
+    gender: "",
+    university: "",
+    department: "",
+    year: "",
+    location: "",
     religion: "Islam",
     lookingFor: "",
-    bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
+    bio: "",
     college: "",
-    guardianName: "Mr. Ahmed Hossain",
-    guardianEmail: "guardian@example.com",
-    guardianPhone: "+880171XXXXXXX",
-    guardianRelation: "Father",
+    guardianName: "",
+    guardianEmail: "",
+    guardianPhone: "",
+    guardianRelation: "",
     medicalCollege: "",
   });
+
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (myProfile && !initialized) {
+      setFormData({
+        name: myProfile.name || "",
+        age: myProfile.age ? String(myProfile.age) : "",
+        gender: myProfile.gender || "",
+        university: myProfile.university || "",
+        department: myProfile.department || "",
+        year: myProfile.year || "",
+        location: myProfile.location || "",
+        religion: myProfile.religion || "Islam",
+        lookingFor: myProfile.looking_for || "",
+        bio: myProfile.bio || "",
+        college: "",
+        guardianName: "",
+        guardianEmail: "",
+        guardianPhone: "",
+        guardianRelation: "",
+        medicalCollege: "",
+      });
+      setSelectedInterests(myProfile.interests || []);
+      setInitialized(true);
+    }
+  }, [myProfile, initialized]);
+
+  if (!authLoading && !user) return <Navigate to="/login" />;
 
   const [isMedicalStudent, setIsMedicalStudent] = useState(false);
   const [medCollegeOpen, setMedCollegeOpen] = useState(false);
 
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Educated", "Family-oriented"]);
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
 
   const preferenceTags = formData.gender === "Male" ? malePreferenceTags : femalePreferenceTags;
 
@@ -123,9 +158,7 @@ const ProfileEdit = () => {
   };
   const [showCollege, setShowCollege] = useState(false);
 
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([
-    "Technology", "Cricket", "Photography", "Hiking"
-  ]);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -136,9 +169,49 @@ const ProfileEdit = () => {
   };
 
   const handleSave = () => {
-    toast({
-      title: "Profile Updated! ✨",
-      description: "Your changes have been saved successfully.",
+    updateProfile.mutate({
+      name: formData.name,
+      age: formData.age ? parseInt(formData.age) : null,
+      gender: formData.gender || null,
+      university: formData.university || null,
+      department: formData.department || null,
+      year: formData.year || null,
+      location: formData.location || null,
+      religion: formData.religion || null,
+      looking_for: formData.lookingFor || null,
+      bio: formData.bio || null,
+      interests: selectedInterests,
+    }, {
+      onSuccess: () => {
+        toast({
+          title: "Profile Updated! ✨",
+          description: "Your changes have been saved successfully.",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Error",
+          description: err.message || "Failed to save profile.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 5MB allowed.", variant: "destructive" });
+      return;
+    }
+    uploadAvatar.mutate(file, {
+      onSuccess: () => {
+        toast({ title: "Photo uploaded! 📸", description: "Your profile photo has been updated." });
+      },
+      onError: (err: any) => {
+        toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+      },
     });
   };
 
