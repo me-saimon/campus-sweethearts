@@ -234,12 +234,6 @@ const BrowseProfiles = () => {
       </div>
 
       <Footer />
-
-      <AnimatePresence>
-        {selectedProfile && (
-          <ProfileDetailModal profile={selectedProfile} onClose={() => setSelectedProfile(null)} />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
