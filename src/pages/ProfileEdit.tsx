@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   User, Camera, GraduationCap, MapPin, BookOpen, Heart,
   Save, Eye, Plus, X, Sparkles, ChevronsUpDown, Check, Stethoscope
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { universities } from "@/data/universities";
+import { useAuth } from "@/hooks/useAuth";
+import { useMyProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
 
 const interestOptions = [
   "Reading", "Writing", "Cooking", "Travel", "Photography", "Music",
@@ -86,29 +88,64 @@ const medicalColleges = [
 const ProfileEdit = () => {
   const [uniOpen, setUniOpen] = useState(false);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const { data: myProfile, isLoading: profileLoading } = useMyProfile();
+  const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
-    name: "Rafiq Ahmed",
-    age: "24",
-    gender: "Male",
-    university: "Bangladesh University of Engineering & Technology",
-    department: "Computer Science",
-    year: "Masters",
-    location: "Dhaka",
+    name: "",
+    age: "",
+    gender: "",
+    university: "",
+    department: "",
+    year: "",
+    location: "",
     religion: "Islam",
     lookingFor: "",
-    bio: "Software engineer with a love for innovation. Family-oriented and ambitious.",
+    bio: "",
     college: "",
-    guardianName: "Mr. Ahmed Hossain",
-    guardianEmail: "guardian@example.com",
-    guardianPhone: "+880171XXXXXXX",
-    guardianRelation: "Father",
+    guardianName: "",
+    guardianEmail: "",
+    guardianPhone: "",
+    guardianRelation: "",
     medicalCollege: "",
   });
 
+  const [initialized, setInitialized] = useState(false);
   const [isMedicalStudent, setIsMedicalStudent] = useState(false);
   const [medCollegeOpen, setMedCollegeOpen] = useState(false);
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+  const [showCollege, setShowCollege] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Educated", "Family-oriented"]);
+  useEffect(() => {
+    if (myProfile && !initialized) {
+      setFormData({
+        name: myProfile.name || "",
+        age: myProfile.age ? String(myProfile.age) : "",
+        gender: myProfile.gender || "",
+        university: myProfile.university || "",
+        department: myProfile.department || "",
+        year: myProfile.year || "",
+        location: myProfile.location || "",
+        religion: myProfile.religion || "Islam",
+        lookingFor: myProfile.looking_for || "",
+        bio: myProfile.bio || "",
+        college: "",
+        guardianName: "",
+        guardianEmail: "",
+        guardianPhone: "",
+        guardianRelation: "",
+        medicalCollege: "",
+      });
+      setSelectedInterests(myProfile.interests || []);
+      setInitialized(true);
+    }
+  }, [myProfile, initialized]);
+
+  if (!authLoading && !user) return <Navigate to="/login" />;
 
   const preferenceTags = formData.gender === "Male" ? malePreferenceTags : femalePreferenceTags;
 
@@ -119,11 +156,6 @@ const ProfileEdit = () => {
         : prev.length < 8 ? [...prev, tag] : prev
     );
   };
-  const [showCollege, setShowCollege] = useState(false);
-
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([
-    "Technology", "Cricket", "Photography", "Hiking"
-  ]);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -134,9 +166,49 @@ const ProfileEdit = () => {
   };
 
   const handleSave = () => {
-    toast({
-      title: "Profile Updated! ✨",
-      description: "Your changes have been saved successfully.",
+    updateProfile.mutate({
+      name: formData.name,
+      age: formData.age ? parseInt(formData.age) : null,
+      gender: formData.gender || null,
+      university: formData.university || null,
+      department: formData.department || null,
+      year: formData.year || null,
+      location: formData.location || null,
+      religion: formData.religion || null,
+      looking_for: formData.lookingFor || null,
+      bio: formData.bio || null,
+      interests: selectedInterests,
+    }, {
+      onSuccess: () => {
+        toast({
+          title: "Profile Updated! ✨",
+          description: "Your changes have been saved successfully.",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Error",
+          description: err.message || "Failed to save profile.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 5MB allowed.", variant: "destructive" });
+      return;
+    }
+    uploadAvatar.mutate(file, {
+      onSuccess: () => {
+        toast({ title: "Photo uploaded! 📸", description: "Your profile photo has been updated." });
+      },
+      onError: (err: any) => {
+        toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+      },
     });
   };
 
@@ -182,15 +254,30 @@ const ProfileEdit = () => {
                   <div className="flex flex-col items-center gap-4">
                     <div className="relative group">
                       <Avatar className="w-28 h-28 ring-4 ring-primary/20">
+                        {myProfile?.avatar_url ? (
+                          <AvatarImage src={myProfile.avatar_url} />
+                        ) : null}
                         <AvatarFallback className="bg-gradient-hero text-primary-foreground text-3xl font-display">
-                          RA
+                          {(formData.name || "U").charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <button className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform"
+                      >
                         <Camera className="w-4 h-4" />
                       </button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handlePhotoUpload}
+                      />
                     </div>
-                    <p className="text-sm text-muted-foreground">Click to upload your photo</p>
+                    <p className="text-sm text-muted-foreground">
+                      {uploadAvatar.isPending ? "Uploading..." : "Click to upload your photo"}
+                    </p>
                   </div>
                 </CardContent>
               </Card>

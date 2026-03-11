@@ -61,7 +61,7 @@ const ProfileDetailModal = ({ profile, onClose }: ProfileDetailModalProps) => {
 
   const handleChat = () => {
     onClose();
-    navigate("/chat");
+    navigate(`/chat?user=${profile.id}`);
   };
 
   const stagger = {

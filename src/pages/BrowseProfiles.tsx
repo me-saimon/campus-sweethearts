@@ -7,19 +7,19 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { mockProfiles, type StudentProfile } from "@/data/mockProfiles";
 import ProfileCard from "@/components/ProfileCard";
-import ProfileDetailModal from "@/components/ProfileDetailModal";
 import { CrescentStar, Lantern, MosqueDome } from "@/components/IslamicVectors";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const universities = ["All", "Dhaka University", "BUET", "Jahangirnagar University", "Chittagong University", "Rajshahi University", "NSU"];
 const locations = ["All", "Dhaka", "Chittagong", "Rajshahi", "Savar"];
 
 const BrowseProfiles = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProfile, setSelectedProfile] = useState<StudentProfile | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState("All");
@@ -212,7 +212,7 @@ const BrowseProfiles = () => {
         {/* Profile Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {filteredProfiles.map((profile, index) => (
-            <ProfileCard key={profile.id} profile={profile} index={index} onViewProfile={() => setSelectedProfile(profile)} />
+            <ProfileCard key={profile.id} profile={profile} index={index} onViewProfile={() => navigate(`/profile/${profile.id}`)} />
           ))}
         </div>
 
@@ -234,12 +234,6 @@ const BrowseProfiles = () => {
       </div>
 
       <Footer />
-
-      <AnimatePresence>
-        {selectedProfile && (
-          <ProfileDetailModal profile={selectedProfile} onClose={() => setSelectedProfile(null)} />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
