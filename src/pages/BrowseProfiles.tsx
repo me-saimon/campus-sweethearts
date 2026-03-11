@@ -7,11 +7,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { mockProfiles, type StudentProfile } from "@/data/mockProfiles";
 import ProfileCard from "@/components/ProfileCard";
-import ProfileDetailModal from "@/components/ProfileDetailModal";
 import { CrescentStar, Lantern, MosqueDome } from "@/components/IslamicVectors";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const universities = ["All", "Dhaka University", "BUET", "Jahangirnagar University", "Chittagong University", "Rajshahi University", "NSU"];
 const locations = ["All", "Dhaka", "Chittagong", "Rajshahi", "Savar"];
