@@ -27,7 +27,7 @@ export const useMessages = (otherUserId: string | undefined) => {
         )
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return (data || []) as Message[];
+      return (data || []) as unknown as Message[];
     },
   });
 
