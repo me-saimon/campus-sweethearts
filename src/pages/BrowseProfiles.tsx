@@ -212,7 +212,7 @@ const BrowseProfiles = () => {
         {/* Profile Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {filteredProfiles.map((profile, index) => (
-            <ProfileCard key={profile.id} profile={profile} index={index} onViewProfile={() => setSelectedProfile(profile)} />
+            <ProfileCard key={profile.id} profile={profile} index={index} onViewProfile={() => navigate(`/profile/${profile.id}`)} />
           ))}
         </div>
 
