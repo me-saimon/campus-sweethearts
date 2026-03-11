@@ -9,24 +9,63 @@ import { mockProfiles, type StudentProfile } from "@/data/mockProfiles";
 import ProfileCard from "@/components/ProfileCard";
 import ProfileDetailModal from "@/components/ProfileDetailModal";
 import { CrescentStar, Lantern, MosqueDome } from "@/components/IslamicVectors";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const universities = ["All", "Dhaka University", "BUET", "Jahangirnagar University", "Chittagong University", "Rajshahi University", "NSU"];
 const locations = ["All", "Dhaka", "Chittagong", "Rajshahi", "Savar"];
 
 const BrowseProfiles = () => {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProfile, setSelectedProfile] = useState<StudentProfile | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState("All");
 
-  const filteredProfiles = useMemo(() => mockProfiles.filter((p) => {
+  const { data: dbProfiles } = useQuery({
+    queryKey: ["all-profiles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const allProfiles: StudentProfile[] = useMemo(() => {
+    if (dbProfiles && dbProfiles.length > 0) {
+      return dbProfiles
+        .filter((p) => p.user_id !== user?.id)
+        .map((p) => ({
+          id: p.user_id,
+          name: p.name || "Anonymous",
+          age: p.age || 0,
+          university: p.university || "",
+          department: p.department || "",
+          year: p.year || "",
+          bio: p.bio || "",
+          interests: p.interests || [],
+          avatar: p.avatar_url || "",
+          location: p.location || "",
+          religion: p.religion || "Islam",
+          lookingFor: p.looking_for || "",
+          endorsements: [],
+        }));
+    }
+    return mockProfiles;
+  }, [dbProfiles, user?.id]);
+
+  const filteredProfiles = useMemo(() => allProfiles.filter((p) => {
     const q = searchQuery.toLowerCase();
     const matchesSearch = p.name.toLowerCase().includes(q) || p.university.toLowerCase().includes(q) || p.department.toLowerCase().includes(q);
     const matchesUni = selectedUniversity === "All" || p.university === selectedUniversity;
     const matchesLoc = selectedLocation === "All" || p.location === selectedLocation;
     return matchesSearch && matchesUni && matchesLoc;
-  }), [searchQuery, selectedUniversity, selectedLocation]);
+  }), [searchQuery, selectedUniversity, selectedLocation, allProfiles]);
 
   const activeFilters = (selectedUniversity !== "All" ? 1 : 0) + (selectedLocation !== "All" ? 1 : 0);
 
