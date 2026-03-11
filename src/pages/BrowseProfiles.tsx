@@ -18,8 +18,8 @@ const locations = ["All", "Dhaka", "Chittagong", "Rajshahi", "Savar"];
 
 const BrowseProfiles = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProfile, setSelectedProfile] = useState<StudentProfile | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState("All");
