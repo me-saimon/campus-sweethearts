@@ -4,7 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import {
   Heart, MessageCircle, Eye, Users, Bell, Settings,
   ChevronRight, Sparkles, Clock, CheckCircle, XCircle,
-  Star
+  Star, ShoppingCart, CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
