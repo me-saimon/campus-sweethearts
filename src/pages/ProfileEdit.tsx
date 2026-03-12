@@ -607,7 +607,7 @@ const ProfileEdit = () => {
                     <p className="text-sm font-medium text-muted-foreground">Basic Preferences</p>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Age Range</Label><Input value={partnerPrefs.ageRange} onChange={e => setPartnerPrefs({...partnerPrefs, ageRange: e.target.value})} placeholder="e.g. 27 - 35" /></div>
-                      <div className="space-y-2"><Label>Height Range</Label><Input value={partnerPrefs.heightRange} onChange={e => setPartnerPrefs({...partnerPrefs, heightRange: e.target.value})} placeholder="e.g. 5'7\" - 6'0\"" /></div>
+                      <div className="space-y-2"><Label>Height Range</Label><Input value={partnerPrefs.heightRange} onChange={e => setPartnerPrefs({...partnerPrefs, heightRange: e.target.value})} placeholder={"e.g. 5'7\" - 6'0\""} /></div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
