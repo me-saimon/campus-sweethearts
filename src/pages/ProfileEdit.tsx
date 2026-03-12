@@ -298,7 +298,7 @@ const ProfileEdit = () => {
                           <SelectContent><SelectItem value="Male">Male</SelectItem><SelectItem value="Female">Female</SelectItem></SelectContent>
                         </Select>
                       </div>
-                      <div className="space-y-2"><Label>Height</Label><Input value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} placeholder="e.g. 5'7\"" /></div>
+                      <div className="space-y-2"><Label>Height</Label><Input value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} placeholder={"e.g. 5'7\""} /></div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Location</Label><Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="City" /></div>
