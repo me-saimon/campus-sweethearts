@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      connect_purchases: {
+        Row: {
+          admin_note: string | null
+          amount: number
+          bkash_txn_id: string
+          created_at: string
+          credits: number
+          id: string
+          package_name: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          amount: number
+          bkash_txn_id: string
+          created_at?: string
+          credits: number
+          id?: string
+          package_name: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          amount?: number
+          bkash_txn_id?: string
+          created_at?: string
+          credits?: number
+          id?: string
+          package_name?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       interest_requests: {
         Row: {
           created_at: string
@@ -72,13 +111,26 @@ export type Database = {
           bio: string | null
           created_at: string
           department: string | null
+          education_details: Json | null
+          family_background: Json | null
           gender: string | null
+          guardian_info: Json | null
+          health_interests: Json | null
+          height: string | null
           id: string
+          interest_credits: number | null
           interests: string[] | null
           location: string | null
           looking_for: string | null
+          marital_status: string | null
           name: string
+          partner_preferences: Json | null
+          physical_illness: string | null
+          relationship_views: Json | null
           religion: string | null
+          religious_practice: Json | null
+          religious_preferences: Json | null
+          skin_tone: string | null
           university: string | null
           updated_at: string
           user_id: string
@@ -90,13 +142,26 @@ export type Database = {
           bio?: string | null
           created_at?: string
           department?: string | null
+          education_details?: Json | null
+          family_background?: Json | null
           gender?: string | null
+          guardian_info?: Json | null
+          health_interests?: Json | null
+          height?: string | null
           id?: string
+          interest_credits?: number | null
           interests?: string[] | null
           location?: string | null
           looking_for?: string | null
+          marital_status?: string | null
           name?: string
+          partner_preferences?: Json | null
+          physical_illness?: string | null
+          relationship_views?: Json | null
           religion?: string | null
+          religious_practice?: Json | null
+          religious_preferences?: Json | null
+          skin_tone?: string | null
           university?: string | null
           updated_at?: string
           user_id: string
@@ -108,17 +173,48 @@ export type Database = {
           bio?: string | null
           created_at?: string
           department?: string | null
+          education_details?: Json | null
+          family_background?: Json | null
           gender?: string | null
+          guardian_info?: Json | null
+          health_interests?: Json | null
+          height?: string | null
           id?: string
+          interest_credits?: number | null
           interests?: string[] | null
           location?: string | null
           looking_for?: string | null
+          marital_status?: string | null
           name?: string
+          partner_preferences?: Json | null
+          physical_illness?: string | null
+          relationship_views?: Json | null
           religion?: string | null
+          religious_practice?: Json | null
+          religious_preferences?: Json | null
+          skin_tone?: string | null
           university?: string | null
           updated_at?: string
           user_id?: string
           year?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -127,10 +223,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -257,6 +359,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
