@@ -20,14 +20,14 @@ export const useMessages = (otherUserId: string | undefined) => {
     enabled: !!user && !!otherUserId,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("messages" as any)
+        .from("messages")
         .select("*")
         .or(
           `and(sender_id.eq.${user!.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user!.id})`
         )
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return (data || []) as unknown as Message[];
+      return (data || []) as Message[];
     },
   });
 
@@ -66,8 +66,8 @@ export const useSendMessage = () => {
   return useMutation({
     mutationFn: async ({ receiverId, text }: { receiverId: string; text: string }) => {
       const { error } = await supabase
-        .from("messages" as any)
-        .insert({ sender_id: user!.id, receiver_id: receiverId, text } as any);
+        .from("messages")
+        .insert({ sender_id: user!.id, receiver_id: receiverId, text });
       if (error) throw error;
     },
     onSuccess: (_, vars) => {
@@ -107,13 +107,13 @@ export const useChatContacts = () => {
       const contacts = await Promise.all(
         (profiles || []).map(async (profile) => {
           const { data: lastMsg } = await supabase
-            .from("messages" as any)
+            .from("messages")
             .select("text, created_at, sender_id")
             .or(
               `and(sender_id.eq.${user!.id},receiver_id.eq.${profile.user_id}),and(sender_id.eq.${profile.user_id},receiver_id.eq.${user!.id})`
             )
             .order("created_at", { ascending: false })
-            .limit(1) as any;
+            .limit(1);
 
           return {
             userId: profile.user_id,
