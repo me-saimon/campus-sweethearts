@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          created_at: string
+          id: string
+          receiver_id: string
+          sender_id: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          receiver_id: string
+          sender_id: string
+          text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          receiver_id?: string
+          sender_id?: string
+          text?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: number | null
