@@ -75,9 +75,12 @@ const Dashboard = () => {
                   <p className="text-primary-foreground/80 mt-1">Here's what's happening with your profile</p>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 <Button variant="outline" size="sm" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20" asChild>
                   <Link to="/profile/edit"><Settings className="w-4 h-4 mr-1" /> Edit Profile</Link>
+                </Button>
+                <Button variant="outline" size="sm" className="bg-secondary/20 border-secondary/30 text-primary-foreground hover:bg-secondary/30" asChild>
+                  <Link to="/purchase-connects"><ShoppingCart className="w-4 h-4 mr-1" /> Buy Connects ({(profile as any)?.interest_credits || 0})</Link>
                 </Button>
                 <Button variant="hero" size="sm" asChild>
                   <Link to="/browse"><Users className="w-4 h-4 mr-1" /> Browse</Link>
