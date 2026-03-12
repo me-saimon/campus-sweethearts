@@ -16,6 +16,8 @@ import Signup from "./pages/Signup";
 import Notifications from "./pages/Notifications";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PurchaseConnects from "./pages/PurchaseConnects";
+import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/purchase-connects" element={<PurchaseConnects />} />
+            <Route path="/admin" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
