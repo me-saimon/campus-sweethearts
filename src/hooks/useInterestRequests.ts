@@ -8,13 +8,26 @@ export const useReceivedInterests = () => {
     queryKey: ["received-interests", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: requests, error } = await supabase
         .from("interest_requests")
-        .select("*, from_profile:profiles!interest_requests_from_user_id_fkey(*)")
+        .select("*")
         .eq("to_user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      if (!requests || requests.length === 0) return [];
+
+      const fromUserIds = [...new Set(requests.map((r) => r.from_user_id))];
+      const { data: profiles, error: pErr } = await supabase
+        .from("profiles")
+        .select("*")
+        .in("user_id", fromUserIds);
+      if (pErr) throw pErr;
+
+      const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
+      return requests.map((r) => ({
+        ...r,
+        from_profile: profileMap.get(r.from_user_id) || null,
+      }));
     },
   });
 };
