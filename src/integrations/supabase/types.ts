@@ -131,9 +131,11 @@ export type Database = {
           religious_practice: Json | null
           religious_preferences: Json | null
           skin_tone: string | null
+          student_id_url: string | null
           university: string | null
           updated_at: string
           user_id: string
+          verified: boolean | null
           year: string | null
         }
         Insert: {
@@ -162,9 +164,11 @@ export type Database = {
           religious_practice?: Json | null
           religious_preferences?: Json | null
           skin_tone?: string | null
+          student_id_url?: string | null
           university?: string | null
           updated_at?: string
           user_id: string
+          verified?: boolean | null
           year?: string | null
         }
         Update: {
@@ -193,9 +197,11 @@ export type Database = {
           religious_practice?: Json | null
           religious_preferences?: Json | null
           skin_tone?: string | null
+          student_id_url?: string | null
           university?: string | null
           updated_at?: string
           user_id?: string
+          verified?: boolean | null
           year?: string | null
         }
         Relationships: []
