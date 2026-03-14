@@ -242,7 +242,6 @@ const ProfileEdit = () => {
     });
   };
 
-  const [studentIdUploading, setStudentIdUploading] = useState(false);
 
   const handleStudentIdUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
