@@ -59,6 +59,7 @@ const ProfileEdit = () => {
   const updateProfile = useUpdateProfile();
   const uploadAvatar = useUploadAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const studentIdInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: "", age: "", gender: "", university: "", department: "", year: "",
