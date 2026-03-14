@@ -240,6 +240,33 @@ const ProfileEdit = () => {
     });
   };
 
+  const [studentIdUploading, setStudentIdUploading] = useState(false);
+
+  const handleStudentIdUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 5MB allowed.", variant: "destructive" });
+      return;
+    }
+    setStudentIdUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/student_id.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("student_ids").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+
+      const { data: urlData } = supabase.storage.from("student_ids").getPublicUrl(path);
+      const { error: updateErr } = await supabase.from("profiles").update({ student_id_url: urlData.publicUrl } as any).eq("user_id", user.id);
+      if (updateErr) throw updateErr;
+
+      toast({ title: "Student ID uploaded! 🎓", description: "Your ID card is being reviewed by admin." });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    }
+    setStudentIdUploading(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
