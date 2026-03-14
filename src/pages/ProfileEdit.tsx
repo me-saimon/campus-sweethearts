@@ -308,7 +308,45 @@ const ProfileEdit = () => {
                 </Card>
               </motion.div>
 
-              {/* Personal Info */}
+              {/* Student ID Card Upload */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
+                <Card className="shadow-card border-none border-l-4 border-l-primary">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-primary" /> Student ID Card
+                      <Badge variant="secondary" className="bg-destructive/10 text-destructive text-xs ml-auto">Required</Badge>
+                    </CardTitle>
+                    <CardDescription>Upload your student ID card for profile verification by admin.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {(myProfile as any)?.student_id_url ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
+                          <Shield className="w-4 h-4 text-primary" />
+                          <span className="text-sm text-muted-foreground">
+                            {(myProfile as any)?.verified ? "✅ Your ID has been verified!" : "📋 ID uploaded — pending admin review"}
+                          </span>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={() => studentIdInputRef.current?.click()}>
+                          <Camera className="w-4 h-4 mr-2" /> Re-upload ID Card
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-3 p-6 border-2 border-dashed border-primary/20 rounded-xl bg-primary/5 cursor-pointer hover:border-primary/40 transition-colors"
+                        onClick={() => studentIdInputRef.current?.click()}>
+                        <Shield className="w-10 h-10 text-primary/40" />
+                        <p className="text-sm text-muted-foreground text-center">
+                          {studentIdUploading ? "Uploading..." : "Click to upload your Student ID Card"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">JPG, PNG — Max 5MB</p>
+                      </div>
+                    )}
+                    <input ref={studentIdInputRef} type="file" accept="image/*" className="hidden" onChange={handleStudentIdUpload} />
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                 <Card className="shadow-card border-none">
                   <CardHeader>
