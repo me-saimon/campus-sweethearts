@@ -24,6 +24,7 @@ import Footer from "@/components/Footer";
 import { universities } from "@/data/universities";
 import { useAuth } from "@/hooks/useAuth";
 import { useMyProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
+import { supabase } from "@/integrations/supabase/client";
 
 const interestOptions = [
   "Reading", "Writing", "Cooking", "Travel", "Photography", "Music",
