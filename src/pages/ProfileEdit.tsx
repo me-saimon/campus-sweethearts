@@ -107,6 +107,7 @@ const ProfileEdit = () => {
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
   const [showCollege, setShowCollege] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [studentIdUploading, setStudentIdUploading] = useState(false);
 
   useEffect(() => {
     if (myProfile && !initialized) {
