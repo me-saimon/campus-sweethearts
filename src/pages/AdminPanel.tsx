@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Navigate } from "react-router-dom";
-import { Shield, Check, X, CreditCard, Users, Clock, CheckCircle } from "lucide-react";
+import { Shield, Check, X, CreditCard, Users, Clock, CheckCircle, Eye, ShieldCheck, ShieldX, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const useIsAdmin = () => {
   const { user } = useAuth();
@@ -19,7 +21,7 @@ const useIsAdmin = () => {
     enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("user_roles" as any)
+        .from("user_roles")
         .select("*")
         .eq("user_id", user!.id)
         .eq("role", "admin");
@@ -34,11 +36,10 @@ const usePendingPurchases = () => {
     queryKey: ["admin-purchases"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("connect_purchases" as any)
+        .from("connect_purchases")
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      // Fetch profile names
       const userIds = [...new Set((data as any[]).map((d: any) => d.user_id))];
       const { data: profiles } = await supabase.from("profiles").select("user_id, name, avatar_url").in("user_id", userIds);
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
@@ -47,13 +48,28 @@ const usePendingPurchases = () => {
   });
 };
 
+const useAllProfiles = () => {
+  return useQuery({
+    queryKey: ["admin-all-profiles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
 const AdminPanel = () => {
   const { user, loading } = useAuth();
   const { data: isAdmin, isLoading: adminLoading } = useIsAdmin();
   const { data: purchases } = usePendingPurchases();
+  const { data: allProfiles } = useAllProfiles();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
+  const [purchaseFilter, setPurchaseFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
 
   if (!loading && !user) return <Navigate to="/login" />;
   if (!adminLoading && !isAdmin) return (
@@ -62,51 +78,64 @@ const AdminPanel = () => {
     </div>
   );
 
-  const filtered = purchases?.filter((p: any) => filter === "all" || p.status === filter) || [];
-  const pendingCount = purchases?.filter((p: any) => p.status === "pending").length || 0;
+  const filteredPurchases = purchases?.filter((p: any) => purchaseFilter === "all" || p.status === purchaseFilter) || [];
+  const pendingPurchaseCount = purchases?.filter((p: any) => p.status === "pending").length || 0;
 
-  const handleApprove = async (purchase: any) => {
+  const unverifiedProfiles = allProfiles?.filter((p: any) => !p.verified && p.student_id_url) || [];
+  const verifiedProfiles = allProfiles?.filter((p: any) => p.verified) || [];
+
+  const handleApprovePurchase = async (purchase: any) => {
     try {
-      // Update purchase status
-      const { error: updateErr } = await supabase
-        .from("connect_purchases" as any)
-        .update({ status: "approved" } as any)
-        .eq("id", purchase.id);
+      const { error: updateErr } = await supabase.from("connect_purchases").update({ status: "approved" } as any).eq("id", purchase.id);
       if (updateErr) throw updateErr;
-
-      // Add credits to user
-      const { data: currentProfile } = await supabase
-        .from("profiles")
-        .select("interest_credits" as any)
-        .eq("user_id", purchase.user_id)
-        .single();
-      
+      const { data: currentProfile } = await supabase.from("profiles").select("interest_credits").eq("user_id", purchase.user_id).single();
       const currentCredits = (currentProfile as any)?.interest_credits || 0;
-      const { error: creditErr } = await supabase
-        .from("profiles")
-        .update({ interest_credits: currentCredits + purchase.credits } as any)
-        .eq("user_id", purchase.user_id);
+      const { error: creditErr } = await supabase.from("profiles").update({ interest_credits: currentCredits + purchase.credits } as any).eq("user_id", purchase.user_id);
       if (creditErr) throw creditErr;
-
       queryClient.invalidateQueries({ queryKey: ["admin-purchases"] });
-      toast({ title: "Approved ✅", description: `${purchase.credits} credits added to user.` });
+      toast({ title: "Approved ✅", description: `${purchase.credits} credits added.` });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   };
 
-  const handleReject = async (purchase: any) => {
+  const handleRejectPurchase = async (purchase: any) => {
     try {
-      const { error } = await supabase
-        .from("connect_purchases" as any)
-        .update({ status: "rejected" } as any)
-        .eq("id", purchase.id);
+      const { error } = await supabase.from("connect_purchases").update({ status: "rejected" } as any).eq("id", purchase.id);
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["admin-purchases"] });
-      toast({ title: "Rejected", description: "Purchase has been rejected." });
+      toast({ title: "Rejected", description: "Purchase rejected." });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
+  };
+
+  const handleVerifyUser = async (profileUserId: string) => {
+    try {
+      const { error } = await supabase.from("profiles").update({ verified: true } as any).eq("user_id", profileUserId);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["admin-all-profiles"] });
+      toast({ title: "User Verified ✅", description: "Profile is now verified." });
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleRejectVerification = async (profileUserId: string) => {
+    try {
+      const { error } = await supabase.from("profiles").update({ verified: false, student_id_url: "" } as any).eq("user_id", profileUserId);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["admin-all-profiles"] });
+      toast({ title: "Verification Rejected", description: "Student ID has been rejected." });
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const getStudentIdUrl = (userId: string) => {
+    // Generate signed URL for admin to view
+    const profile = allProfiles?.find(p => p.user_id === userId);
+    return (profile as any)?.student_id_url || "";
   };
 
   return (
@@ -122,16 +151,16 @@ const AdminPanel = () => {
               <h1 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground drop-shadow-md">
                 <Shield className="w-8 h-8 inline mr-2" /> Admin <span className="text-secondary">Panel</span>
               </h1>
-              <p className="text-primary-foreground/80 mt-1">Manage connect purchases and user credits</p>
+              <p className="text-primary-foreground/80 mt-1">Manage user verification and connect purchases</p>
             </motion.div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               {[
-                { label: "Total Purchases", value: purchases?.length || 0, icon: CreditCard, color: "text-primary" },
-                { label: "Pending", value: pendingCount, icon: Clock, color: "text-accent" },
-                { label: "Approved", value: purchases?.filter((p: any) => p.status === "approved").length || 0, icon: CheckCircle, color: "text-green-600" },
-                { label: "Rejected", value: purchases?.filter((p: any) => p.status === "rejected").length || 0, icon: X, color: "text-destructive" },
+                { label: "Total Users", value: allProfiles?.length || 0, icon: Users, color: "text-primary" },
+                { label: "Pending Verification", value: unverifiedProfiles.length, icon: ShieldX, color: "text-accent" },
+                { label: "Verified Users", value: verifiedProfiles.length, icon: ShieldCheck, color: "text-green-600" },
+                { label: "Pending Purchases", value: pendingPurchaseCount, icon: Clock, color: "text-destructive" },
               ].map((s, i) => (
                 <Card key={i} className="shadow-card border-none">
                   <CardContent className="p-4">
@@ -143,55 +172,133 @@ const AdminPanel = () => {
               ))}
             </div>
 
-            {/* Filter */}
-            <div className="flex gap-2 mb-6">
-              {(["all", "pending", "approved", "rejected"] as const).map(f => (
-                <Button key={f} variant={filter === f ? "hero" : "outline"} size="sm" onClick={() => setFilter(f)} className="capitalize">
-                  {f} {f === "pending" && pendingCount > 0 && <Badge className="ml-1 bg-destructive text-destructive-foreground text-xs">{pendingCount}</Badge>}
-                </Button>
-              ))}
-            </div>
+            <Tabs defaultValue="verification" className="space-y-6">
+              <TabsList className="bg-card border">
+                <TabsTrigger value="verification">
+                  User Verification {unverifiedProfiles.length > 0 && <Badge className="ml-2 bg-accent text-accent-foreground text-xs">{unverifiedProfiles.length}</Badge>}
+                </TabsTrigger>
+                <TabsTrigger value="purchases">
+                  Connect Purchases {pendingPurchaseCount > 0 && <Badge className="ml-2 bg-destructive text-destructive-foreground text-xs">{pendingPurchaseCount}</Badge>}
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Purchases List */}
-            <div className="space-y-4">
-              {filtered.length === 0 && (
-                <Card className="shadow-card border-none"><CardContent className="p-8 text-center text-muted-foreground">No purchases found.</CardContent></Card>
-              )}
-              {filtered.map((purchase: any, i: number) => (
-                <motion.div key={purchase.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <Card className="shadow-card border-none">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium">{purchase.profile?.name || "Unknown User"}</span>
-                            <Badge variant={purchase.status === "pending" ? "secondary" : purchase.status === "approved" ? "default" : "destructive"}
-                              className={purchase.status === "approved" ? "bg-green-100 text-green-700" : ""}>
-                              {purchase.status}
-                            </Badge>
+              {/* Verification Tab */}
+              <TabsContent value="verification" className="space-y-4">
+                <h2 className="text-lg font-display font-bold">Pending Student ID Verification</h2>
+                {unverifiedProfiles.length === 0 ? (
+                  <Card className="shadow-card border-none"><CardContent className="p-8 text-center text-muted-foreground">No pending verifications.</CardContent></Card>
+                ) : (
+                  unverifiedProfiles.map((profile: any, i: number) => (
+                    <motion.div key={profile.user_id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                      <Card className="shadow-card border-none">
+                        <CardContent className="p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-12 h-12">
+                                {profile.avatar_url ? <AvatarImage src={profile.avatar_url} /> : null}
+                                <AvatarFallback className="bg-gradient-hero text-primary-foreground font-display">{(profile.name || "U").charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-medium">{profile.name || "Unknown"}</p>
+                                <p className="text-sm text-muted-foreground">{profile.university || "No university"} · {profile.department || "N/A"}</p>
+                                <p className="text-xs text-muted-foreground">{profile.gender || "N/A"} · Age: {profile.age || "N/A"}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {profile.student_id_url && (
+                                <Button variant="outline" size="sm" onClick={() => window.open(profile.student_id_url, "_blank")}>
+                                  <Image className="w-4 h-4 mr-1" /> View ID Card
+                                </Button>
+                              )}
+                              <Button variant="hero" size="sm" onClick={() => handleVerifyUser(profile.user_id)}>
+                                <Check className="w-4 h-4 mr-1" /> Verify
+                              </Button>
+                              <Button variant="outline" size="sm" onClick={() => handleRejectVerification(profile.user_id)} className="text-destructive hover:bg-destructive/10">
+                                <X className="w-4 h-4 mr-1" /> Reject
+                              </Button>
+                            </div>
                           </div>
-                          <div className="text-sm text-muted-foreground space-y-0.5">
-                            <p>Package: <span className="font-medium text-foreground">{purchase.package_name}</span> — BDT {purchase.amount}</p>
-                            <p>bKash TXN: <span className="font-mono font-medium text-foreground">{purchase.bkash_txn_id}</span></p>
-                            <p>Credits: {purchase.credits} — {new Date(purchase.created_at).toLocaleString()}</p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))
+                )}
+
+                <h2 className="text-lg font-display font-bold mt-8">Verified Users ({verifiedProfiles.length})</h2>
+                {verifiedProfiles.length === 0 ? (
+                  <Card className="shadow-card border-none"><CardContent className="p-8 text-center text-muted-foreground">No verified users yet.</CardContent></Card>
+                ) : (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {verifiedProfiles.slice(0, 20).map((profile: any) => (
+                      <Card key={profile.user_id} className="shadow-card border-none">
+                        <CardContent className="p-3 flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            {profile.avatar_url ? <AvatarImage src={profile.avatar_url} /> : null}
+                            <AvatarFallback className="bg-gradient-hero text-primary-foreground text-sm font-display">{(profile.name || "U").charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{profile.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{profile.university}</p>
                           </div>
-                        </div>
-                        {purchase.status === "pending" && (
-                          <div className="flex gap-2">
-                            <Button variant="hero" size="sm" onClick={() => handleApprove(purchase)}>
-                              <Check className="w-4 h-4 mr-1" /> Approve
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => handleReject(purchase)} className="text-destructive hover:bg-destructive/10">
-                              <X className="w-4 h-4 mr-1" /> Reject
-                            </Button>
+                          <Badge className="bg-green-100 text-green-700 text-xs"><ShieldCheck className="w-3 h-3 mr-0.5" /> Verified</Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Purchases Tab */}
+              <TabsContent value="purchases" className="space-y-4">
+                <div className="flex gap-2 mb-4">
+                  {(["all", "pending", "approved", "rejected"] as const).map(f => (
+                    <Button key={f} variant={purchaseFilter === f ? "hero" : "outline"} size="sm" onClick={() => setPurchaseFilter(f)} className="capitalize">
+                      {f} {f === "pending" && pendingPurchaseCount > 0 && <Badge className="ml-1 bg-destructive text-destructive-foreground text-xs">{pendingPurchaseCount}</Badge>}
+                    </Button>
+                  ))}
+                </div>
+
+                <div className="space-y-4">
+                  {filteredPurchases.length === 0 && (
+                    <Card className="shadow-card border-none"><CardContent className="p-8 text-center text-muted-foreground">No purchases found.</CardContent></Card>
+                  )}
+                  {filteredPurchases.map((purchase: any, i: number) => (
+                    <motion.div key={purchase.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                      <Card className="shadow-card border-none">
+                        <CardContent className="p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">{purchase.profile?.name || "Unknown User"}</span>
+                                <Badge variant={purchase.status === "pending" ? "secondary" : purchase.status === "approved" ? "default" : "destructive"}
+                                  className={purchase.status === "approved" ? "bg-green-100 text-green-700" : ""}>
+                                  {purchase.status}
+                                </Badge>
+                              </div>
+                              <div className="text-sm text-muted-foreground space-y-0.5">
+                                <p>Package: <span className="font-medium text-foreground">{purchase.package_name}</span> — BDT {purchase.amount}</p>
+                                <p>bKash TXN: <span className="font-mono font-medium text-foreground">{purchase.bkash_txn_id}</span></p>
+                                <p>Credits: {purchase.credits} — {new Date(purchase.created_at).toLocaleString()}</p>
+                              </div>
+                            </div>
+                            {purchase.status === "pending" && (
+                              <div className="flex gap-2">
+                                <Button variant="hero" size="sm" onClick={() => handleApprovePurchase(purchase)}>
+                                  <Check className="w-4 h-4 mr-1" /> Approve
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleRejectPurchase(purchase)} className="text-destructive hover:bg-destructive/10">
+                                  <X className="w-4 h-4 mr-1" /> Reject
+                                </Button>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
