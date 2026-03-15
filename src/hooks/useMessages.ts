@@ -3,12 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useEffect } from "react";
 
-interface Message {
+export interface Message {
   id: string;
   sender_id: string;
   receiver_id: string;
   text: string;
   created_at: string;
+  reply_to: string | null;
 }
 
 export const useMessages = (otherUserId: string | undefined) => {
@@ -64,10 +65,10 @@ export const useSendMessage = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ receiverId, text }: { receiverId: string; text: string }) => {
-      const { error } = await supabase
-        .from("messages")
-        .insert({ sender_id: user!.id, receiver_id: receiverId, text });
+    mutationFn: async ({ receiverId, text, replyTo }: { receiverId: string; text: string; replyTo?: string }) => {
+      const insertData: any = { sender_id: user!.id, receiver_id: receiverId, text };
+      if (replyTo) insertData.reply_to = replyTo;
+      const { error } = await supabase.from("messages").insert(insertData);
       if (error) throw error;
     },
     onSuccess: (_, vars) => {
