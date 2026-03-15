@@ -85,6 +85,7 @@ export type Database = {
           created_at: string
           id: string
           receiver_id: string
+          reply_to: string | null
           sender_id: string
           text: string
         }
@@ -92,6 +93,7 @@ export type Database = {
           created_at?: string
           id?: string
           receiver_id: string
+          reply_to?: string | null
           sender_id: string
           text: string
         }
@@ -99,10 +101,19 @@ export type Database = {
           created_at?: string
           id?: string
           receiver_id?: string
+          reply_to?: string | null
           sender_id?: string
           text?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
