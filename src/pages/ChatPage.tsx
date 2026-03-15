@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, ChevronLeft, MessageCircle, Search, Smile } from "lucide-react";
+import { Send, ChevronLeft, MessageCircle, Search, Smile, Reply, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useSearchParams, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useMessages, useSendMessage, useChatContacts } from "@/hooks/useMessages";
+import { useMessages, useSendMessage, useChatContacts, Message } from "@/hooks/useMessages";
+import EmojiPicker from "@/components/chat/EmojiPicker";
 
 const ChatPage = () => {
   const { user, loading } = useAuth();
@@ -15,7 +16,10 @@ const ChatPage = () => {
   const activeChatUser = searchParams.get("user") || "";
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null);
+  const [showEmoji, setShowEmoji] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: contacts, isLoading: contactsLoading } = useChatContacts();
   const { data: messages } = useMessages(activeChatUser || undefined);
@@ -41,8 +45,23 @@ const ChatPage = () => {
 
   const handleSend = () => {
     if (!newMessage.trim() || !activeChatUser) return;
-    sendMessage.mutate({ receiverId: activeChatUser, text: newMessage.trim() });
+    sendMessage.mutate({
+      receiverId: activeChatUser,
+      text: newMessage.trim(),
+      replyTo: replyingTo?.id,
+    });
     setNewMessage("");
+    setReplyingTo(null);
+  };
+
+  const handleReply = (msg: Message) => {
+    setReplyingTo(msg);
+    inputRef.current?.focus();
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setNewMessage((prev) => prev + emoji);
+    inputRef.current?.focus();
   };
 
   const formatTime = (dateStr: string) => {
@@ -55,19 +74,19 @@ const ChatPage = () => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-
     if (date.toDateString() === today.toDateString()) return "Today";
     if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
     return date.toLocaleDateString([], { month: "short", day: "numeric" });
   };
 
-  // Group messages by date
+  const findMessage = (id: string | null) => messages?.find((m) => m.id === id);
+
   const groupedMessages = messages?.reduce((groups, msg) => {
     const date = new Date(msg.created_at).toDateString();
     if (!groups[date]) groups[date] = [];
     groups[date].push(msg);
     return groups;
-  }, {} as Record<string, typeof messages>) || {};
+  }, {} as Record<string, Message[]>) || {};
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -96,8 +115,8 @@ const ChatPage = () => {
             )}
             {!contactsLoading && (!filteredContacts || filteredContacts.length === 0) && (
               <div className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-3">
-                  <MessageCircle className="w-7 h-7 text-primary/40" />
+                <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-3">
+                  <MessageCircle className="w-7 h-7 text-secondary/50" />
                 </div>
                 <p className="text-sm font-medium text-foreground">No conversations</p>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
@@ -108,16 +127,16 @@ const ChatPage = () => {
             {filteredContacts?.map((contact) => (
               <button
                 key={contact.userId}
-                onClick={() => setSearchParams({ user: contact.userId })}
+                onClick={() => { setSearchParams({ user: contact.userId }); setReplyingTo(null); }}
                 className={`w-full p-4 flex items-center gap-3 transition-all duration-200 border-b border-border/30 ${
                   activeChatUser === contact.userId
-                    ? "bg-primary/8 border-l-2 border-l-primary"
-                    : "hover:bg-muted/40 border-l-2 border-l-transparent"
+                    ? "bg-secondary/10 border-l-3 border-l-secondary"
+                    : "hover:bg-muted/40 border-l-3 border-l-transparent"
                 }`}
               >
                 <Avatar className="w-11 h-11 flex-shrink-0">
                   <AvatarImage src={contact.avatarUrl} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-secondary/20 to-secondary/5 text-secondary font-semibold text-sm">
                     {contact.initial}
                   </AvatarFallback>
                 </Avatar>
@@ -144,8 +163,8 @@ const ChatPage = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mx-auto mb-5">
-                  <MessageCircle className="w-10 h-10 text-primary/50" />
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-secondary/15 to-secondary/5 flex items-center justify-center mx-auto mb-5">
+                  <MessageCircle className="w-10 h-10 text-secondary/50" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-foreground">
                   {contacts && contacts.length > 0 ? "Select a conversation" : "No conversations yet"}
@@ -156,7 +175,7 @@ const ChatPage = () => {
                     : "Browse profiles and show interest to start meaningful conversations"}
                 </p>
                 {(!contacts || contacts.length === 0) && (
-                  <Button variant="hero" size="sm" className="mt-5 rounded-full px-6" asChild>
+                  <Button size="sm" className="mt-5 rounded-full px-6 bg-secondary text-secondary-foreground hover:bg-secondary/90" asChild>
                     <Link to="/browse">Browse Profiles</Link>
                   </Button>
                 )}
@@ -171,12 +190,12 @@ const ChatPage = () => {
                 </Link>
                 <Avatar className="w-10 h-10">
                   <AvatarImage src={activeContact.avatarUrl} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-secondary/20 to-secondary/5 text-secondary font-semibold text-sm">
                     {activeContact.initial}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <Link to={`/profile/${activeChatUser}`} className="text-sm font-bold text-foreground hover:text-primary transition-colors">
+                  <Link to={`/profile/${activeChatUser}`} className="text-sm font-bold text-foreground hover:text-secondary transition-colors">
                     {activeContact.name}
                   </Link>
                   <p className="text-xs text-muted-foreground">{activeContact.university}</p>
@@ -189,37 +208,69 @@ const ChatPage = () => {
                   <div key={date}>
                     <div className="flex items-center justify-center my-4">
                       <span className="text-[11px] text-muted-foreground bg-muted/60 px-3 py-1 rounded-full font-medium">
-                        {formatDate(msgs![0].created_at)}
+                        {formatDate(msgs[0].created_at)}
                       </span>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <AnimatePresence>
-                        {msgs!.map((msg, idx) => {
+                        {msgs.map((msg, idx) => {
                           const isMine = msg.sender_id === user?.id;
-                          const showTail = idx === msgs!.length - 1 || msgs![idx + 1]?.sender_id !== msg.sender_id;
+                          const showTail = idx === msgs.length - 1 || msgs[idx + 1]?.sender_id !== msg.sender_id;
+                          const repliedMsg = findMessage(msg.reply_to);
+
                           return (
                             <motion.div
                               key={msg.id}
                               initial={{ opacity: 0, y: 8, scale: 0.97 }}
                               animate={{ opacity: 1, y: 0, scale: 1 }}
                               transition={{ duration: 0.2, ease: "easeOut" }}
-                              className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                              className={`flex ${isMine ? "justify-end" : "justify-start"} group/msg`}
                             >
-                              <div
-                                className={`max-w-[70%] px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
-                                  isMine
-                                    ? `bg-primary text-primary-foreground ${showTail ? "rounded-2xl rounded-br-md" : "rounded-2xl"}`
-                                    : `bg-card border border-border/60 text-foreground ${showTail ? "rounded-2xl rounded-bl-md" : "rounded-2xl"}`
-                                }`}
-                              >
-                                <p className="whitespace-pre-wrap break-words">{msg.text}</p>
-                                <p
-                                  className={`text-[10px] mt-1 text-right ${
-                                    isMine ? "text-primary-foreground/50" : "text-muted-foreground/70"
+                              <div className="flex items-center gap-1 max-w-[75%]">
+                                {/* Reply button - shown on hover for other's messages */}
+                                {!isMine && (
+                                  <button
+                                    onClick={() => handleReply(msg)}
+                                    className="opacity-0 group-hover/msg:opacity-100 transition-opacity p-1 rounded-full hover:bg-muted/60"
+                                    title="Reply"
+                                  >
+                                    <Reply className="w-3.5 h-3.5 text-muted-foreground" />
+                                  </button>
+                                )}
+                                <div
+                                  className={`px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
+                                    isMine
+                                      ? `bg-secondary text-secondary-foreground ${showTail ? "rounded-2xl rounded-br-md" : "rounded-2xl"}`
+                                      : `bg-card border border-border/60 text-foreground ${showTail ? "rounded-2xl rounded-bl-md" : "rounded-2xl"}`
                                   }`}
                                 >
-                                  {formatTime(msg.created_at)}
-                                </p>
+                                  {/* Replied message preview */}
+                                  {repliedMsg && (
+                                    <div className={`text-xs mb-1.5 px-2.5 py-1.5 rounded-lg border-l-2 ${
+                                      isMine
+                                        ? "bg-secondary-foreground/10 border-secondary-foreground/30 text-secondary-foreground/70"
+                                        : "bg-muted/50 border-primary/30 text-muted-foreground"
+                                    }`}>
+                                      <p className="truncate max-w-[200px]">{repliedMsg.text}</p>
+                                    </div>
+                                  )}
+                                  <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+                                  <p className={`text-[10px] mt-1 text-right ${
+                                    isMine ? "text-secondary-foreground/50" : "text-muted-foreground/70"
+                                  }`}>
+                                    {formatTime(msg.created_at)}
+                                  </p>
+                                </div>
+                                {/* Reply button - shown on hover for own messages */}
+                                {isMine && (
+                                  <button
+                                    onClick={() => handleReply(msg)}
+                                    className="opacity-0 group-hover/msg:opacity-100 transition-opacity p-1 rounded-full hover:bg-muted/60"
+                                    title="Reply"
+                                  >
+                                    <Reply className="w-3.5 h-3.5 text-muted-foreground" />
+                                  </button>
+                                )}
                               </div>
                             </motion.div>
                           );
@@ -231,25 +282,54 @@ const ChatPage = () => {
                 <div ref={messagesEndRef} />
               </div>
 
+              {/* Reply preview bar */}
+              <AnimatePresence>
+                {replyingTo && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="border-t border-border bg-secondary/5 px-4 py-2 flex items-center gap-3"
+                  >
+                    <Reply className="w-4 h-4 text-secondary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-secondary">
+                        Replying to {replyingTo.sender_id === user?.id ? "yourself" : activeContact?.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{replyingTo.text}</p>
+                    </div>
+                    <button onClick={() => setReplyingTo(null)} className="p-1 rounded-full hover:bg-muted/60">
+                      <X className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Input */}
               <div className="p-3 border-t border-border bg-card/80 backdrop-blur-sm">
                 <div className="flex items-center gap-2 max-w-3xl mx-auto">
                   <div className="flex-1 relative">
                     <Input
+                      ref={inputRef}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
                       placeholder="Type a message..."
-                      className="rounded-full bg-muted/50 border-border/50 focus-visible:ring-1 focus-visible:ring-primary/40 pr-10 h-11 text-sm"
+                      className="rounded-full bg-muted/50 border-border/50 focus-visible:ring-1 focus-visible:ring-secondary/40 pr-10 h-11 text-sm"
                     />
-                    <button className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-                      <Smile className="w-5 h-5" />
-                    </button>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <button
+                        onClick={() => setShowEmoji(!showEmoji)}
+                        className="text-muted-foreground/50 hover:text-secondary transition-colors"
+                      >
+                        <Smile className="w-5 h-5" />
+                      </button>
+                      <EmojiPicker isOpen={showEmoji} onClose={() => setShowEmoji(false)} onSelect={handleEmojiSelect} />
+                    </div>
                   </div>
                   <Button
-                    variant="default"
                     size="icon"
-                    className="rounded-full w-11 h-11 bg-primary hover:bg-primary/90 shadow-md shadow-primary/20 transition-all duration-200"
+                    className="rounded-full w-11 h-11 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 transition-all duration-200"
                     onClick={handleSend}
                     disabled={!newMessage.trim() || sendMessage.isPending}
                   >
