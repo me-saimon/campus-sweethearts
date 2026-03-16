@@ -155,7 +155,7 @@ const ChatPage = () => {
         </div>
 
         {/* Chat area - takes remaining space, independent scroll */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ height: "calc(100vh - 64px)" }}>
           {!activeChatUser || !activeContact ? (
             <div className="flex-1 flex items-center justify-center text-center p-8">
               <motion.div

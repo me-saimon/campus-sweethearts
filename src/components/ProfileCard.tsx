@@ -46,9 +46,33 @@ const ProfileCard = ({ profile, index, onViewProfile }: ProfileCardProps) => {
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary-foreground/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-20 h-20 bg-primary-foreground/5 rounded-full translate-y-1/2 -translate-x-1/4" />
 
-        {/* User icon */}
-        <div className="w-16 h-16 rounded-full bg-primary-foreground/15 border-2 border-primary-foreground/30 flex items-center justify-center mb-4">
-          <User className="w-8 h-8 text-primary-foreground/80" />
+        {/* Gendered icon with graduation hat */}
+        <div className="w-16 h-16 rounded-full bg-primary-foreground/15 border-2 border-primary-foreground/30 flex items-center justify-center mb-4 relative">
+          {profile.gender?.toLowerCase() === "female" ? (
+            <svg viewBox="0 0 64 64" className="w-10 h-10" fill="none">
+              {/* Female silhouette */}
+              <circle cx="32" cy="20" r="10" fill="hsl(var(--primary-foreground))" opacity="0.8" />
+              <path d="M18 52c0-10 6-16 14-16s14 6 14 16" fill="hsl(var(--primary-foreground))" opacity="0.8" />
+              {/* Long hair */}
+              <path d="M22 20c0-8 4-14 10-14s10 6 10 14c2 0 4 2 4 5s-2 4-4 3c0 0-1 4-10 4s-10-4-10-4c-2 1-4 0-4-3s2-5 4-5z" fill="hsl(var(--primary-foreground))" opacity="0.6" />
+              {/* Graduation cap */}
+              <polygon points="32,2 48,10 32,18 16,10" fill="hsl(var(--primary-foreground))" opacity="0.9" />
+              <rect x="30" y="10" width="4" height="8" fill="hsl(var(--primary-foreground))" opacity="0.7" />
+              <line x1="48" y1="10" x2="48" y2="18" stroke="hsl(var(--primary-foreground))" strokeWidth="1.5" opacity="0.7" />
+              <circle cx="48" cy="19" r="1.5" fill="hsl(var(--primary-foreground))" opacity="0.7" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 64 64" className="w-10 h-10" fill="none">
+              {/* Male silhouette */}
+              <circle cx="32" cy="22" r="10" fill="hsl(var(--primary-foreground))" opacity="0.8" />
+              <path d="M18 52c0-10 6-16 14-16s14 6 14 16" fill="hsl(var(--primary-foreground))" opacity="0.8" />
+              {/* Graduation cap */}
+              <polygon points="32,2 48,10 32,18 16,10" fill="hsl(var(--primary-foreground))" opacity="0.9" />
+              <rect x="30" y="10" width="4" height="8" fill="hsl(var(--primary-foreground))" opacity="0.7" />
+              <line x1="48" y1="10" x2="48" y2="18" stroke="hsl(var(--primary-foreground))" strokeWidth="1.5" opacity="0.7" />
+              <circle cx="48" cy="19" r="1.5" fill="hsl(var(--primary-foreground))" opacity="0.7" />
+            </svg>
+          )}
         </div>
 
         {/* Unique ID */}
