@@ -91,9 +91,9 @@ const ChatPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="flex-1 pt-16 flex overflow-hidden">
-        {/* Sidebar - fixed width, independent scroll */}
-        <div className="w-[340px] border-r border-border bg-card hidden md:flex flex-col flex-shrink-0 h-[calc(100vh-64px)]">
+      <div className="flex-1 pt-16 flex" style={{ height: "calc(100vh - 64px)" }}>
+        {/* Sidebar - fixed width, fully independent scroll */}
+        <div className="w-[340px] border-r border-border bg-card hidden md:flex flex-col flex-shrink-0 overflow-hidden" style={{ height: "calc(100vh - 64px)", position: "sticky", top: "64px" }}>
           <div className="p-5 border-b border-border flex-shrink-0">
             <h2 className="text-xl font-display font-bold text-foreground mb-3">Messages</h2>
             <div className="relative">
@@ -155,7 +155,7 @@ const ChatPage = () => {
         </div>
 
         {/* Chat area - takes remaining space, independent scroll */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ height: "calc(100vh - 64px)" }}>
           {!activeChatUser || !activeContact ? (
             <div className="flex-1 flex items-center justify-center text-center p-8">
               <motion.div
