@@ -93,8 +93,8 @@ const ChatPage = () => {
       <Navbar />
       <div className="flex-1 pt-16 flex overflow-hidden">
         {/* Sidebar - fixed width, independent scroll */}
-        <div className="w-[340px] border-r border-border bg-card hidden md:flex flex-col flex-shrink-0">
-          <div className="p-5 border-b border-border">
+        <div className="w-[340px] border-r border-border bg-card hidden md:flex flex-col flex-shrink-0 h-[calc(100vh-64px)]">
+          <div className="p-5 border-b border-border flex-shrink-0">
             <h2 className="text-xl font-display font-bold text-foreground mb-3">Messages</h2>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
