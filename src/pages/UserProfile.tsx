@@ -49,7 +49,7 @@ const SectionCard = ({ icon: Icon, title, children, delay = 0.2 }: { icon: any; 
         <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center">
           <Icon className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-xl font-semibold text-foreground" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{title}</h3>
+        <h3 className="text-2xl font-bold" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: "#111" }}>{title}</h3>
       </div>
       <div className="p-7">{children}</div>
     </div>
@@ -60,8 +60,8 @@ const StatBox = ({ label, value }: { label: string; value: string | undefined | 
   if (!value) return null;
   return (
     <div className="flex-1 text-center py-5 px-4 border border-border rounded-xl bg-card shadow-sm">
-      <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-1.5">{label}</p>
-      <p className="text-lg font-bold text-foreground">{value}</p>
+      <p className="text-xs uppercase tracking-widest font-semibold mb-1.5" style={{ color: "#555" }}>{label}</p>
+      <p className="text-xl font-bold" style={{ color: "#111" }}>{value}</p>
     </div>
   );
 };
