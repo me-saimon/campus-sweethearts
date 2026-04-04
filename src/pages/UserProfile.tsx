@@ -26,8 +26,8 @@ const TableRow = ({ label, value }: { label: string; value: string | undefined |
   if (!value) return null;
   return (
     <div className="flex justify-between py-3.5 border-b border-border/60 last:border-b-0">
-      <span className="text-muted-foreground text-base">{label}</span>
-      <span className="font-medium text-base text-foreground text-right max-w-[60%]">{value}</span>
+      <span className="text-lg" style={{ color: "#222" }}>{label}</span>
+      <span className="font-semibold text-lg text-right max-w-[60%]" style={{ color: "#111" }}>{value}</span>
     </div>
   );
 };
@@ -36,8 +36,8 @@ const OpenEndedAnswer = ({ label, value }: { label: string; value: string | unde
   if (!value) return null;
   return (
     <div className="mt-4 rounded-xl bg-primary/5 border border-primary/10 p-5">
-      <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-2">{label}</p>
-      <p className="text-muted-foreground text-base leading-relaxed">{value}</p>
+      <p className="text-sm uppercase tracking-widest text-primary font-semibold mb-2">{label}</p>
+      <p className="text-lg leading-relaxed" style={{ color: "#333" }}>{value}</p>
     </div>
   );
 };
@@ -46,10 +46,10 @@ const SectionCard = ({ icon: Icon, title, children, delay = 0.2 }: { icon: any; 
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
     <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
       <div className="flex items-center gap-3 px-7 py-5 border-b border-border bg-muted/30">
-        <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
-          <Icon className="w-5 h-5 text-primary" />
+        <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center">
+          <Icon className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-xl font-semibold text-foreground" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{title}</h3>
+        <h3 className="text-2xl font-bold" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: "#111" }}>{title}</h3>
       </div>
       <div className="p-7">{children}</div>
     </div>
@@ -60,8 +60,8 @@ const StatBox = ({ label, value }: { label: string; value: string | undefined | 
   if (!value) return null;
   return (
     <div className="flex-1 text-center py-5 px-4 border border-border rounded-xl bg-card shadow-sm">
-      <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-1.5">{label}</p>
-      <p className="text-lg font-bold text-foreground">{value}</p>
+      <p className="text-xs uppercase tracking-widest font-semibold mb-1.5" style={{ color: "#555" }}>{label}</p>
+      <p className="text-xl font-bold" style={{ color: "#111" }}>{value}</p>
     </div>
   );
 };
