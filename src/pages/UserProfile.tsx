@@ -26,8 +26,8 @@ const TableRow = ({ label, value }: { label: string; value: string | undefined |
   if (!value) return null;
   return (
     <div className="flex justify-between py-3.5 border-b border-border/60 last:border-b-0">
-      <span className="text-muted-foreground text-base">{label}</span>
-      <span className="font-medium text-base text-foreground text-right max-w-[60%]">{value}</span>
+      <span className="text-lg" style={{ color: "#222" }}>{label}</span>
+      <span className="font-semibold text-lg text-right max-w-[60%]" style={{ color: "#111" }}>{value}</span>
     </div>
   );
 };
@@ -36,8 +36,8 @@ const OpenEndedAnswer = ({ label, value }: { label: string; value: string | unde
   if (!value) return null;
   return (
     <div className="mt-4 rounded-xl bg-primary/5 border border-primary/10 p-5">
-      <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-2">{label}</p>
-      <p className="text-muted-foreground text-base leading-relaxed">{value}</p>
+      <p className="text-sm uppercase tracking-widest text-primary font-semibold mb-2">{label}</p>
+      <p className="text-lg leading-relaxed" style={{ color: "#333" }}>{value}</p>
     </div>
   );
 };
