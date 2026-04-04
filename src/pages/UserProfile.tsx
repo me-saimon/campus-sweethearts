@@ -160,7 +160,7 @@ const UserProfile = () => {
   const completeness = Math.round((filledFields / totalFields) * 100);
 
   return (
-    <div className="min-h-screen" style={{ background: "hsl(45 40% 97%)" }}>
+    <div className="min-h-screen" style={{ background: "hsl(150 20% 95%)" }}>
       <Navbar />
       <div className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
