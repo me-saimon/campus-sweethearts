@@ -160,6 +160,10 @@
     background: var(--gradient-islamic);
   }
 
+  .bg-gradient-soft {
+    background: var(--gradient-soft);
+  }
+
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
