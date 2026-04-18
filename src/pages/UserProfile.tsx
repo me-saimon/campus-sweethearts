@@ -211,7 +211,7 @@ const UserProfile = () => {
   ].filter(Boolean) as { id: string; label: string }[];
 
   return (
-    <div className="min-h-screen bg-[hsl(150_25%_97%)]">
+    <div className="min-h-screen bg-[hsl(40_30%_98%)]">
       <Navbar />
 
       <div className="pt-20 pb-20">
@@ -244,70 +244,76 @@ const UserProfile = () => {
             transition={{ duration: 0.5 }}
             className="bg-card rounded-2xl border border-border/70 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.12)] overflow-hidden mb-6"
           >
-            <div className="h-32 relative overflow-hidden bg-gradient-to-br from-primary via-primary/85 to-emerald-dark/80">
-              <div className="absolute inset-0 islamic-pattern opacity-15" />
-              <div className="absolute inset-0 bg-gradient-to-t from-card/0 via-transparent to-transparent" />
+            {/* Soft cover with fade to card */}
+            <div className="h-24 sm:h-28 relative overflow-hidden bg-gradient-to-br from-primary/80 via-primary/60 to-emerald-dark/50">
+              <div className="absolute inset-0 islamic-pattern opacity-10" />
+              <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-card via-card/60 to-transparent" />
             </div>
-            <div className="px-6 sm:px-8 pb-6">
-              <div className="flex flex-col sm:flex-row sm:items-end gap-5 -mt-14">
-                <Avatar className="w-28 h-28 ring-4 ring-card shadow-lg">
+
+            <div className="px-6 sm:px-8 pb-6 pt-0">
+              {/* Avatar + name row */}
+              <div className="flex items-end gap-5 -mt-12 sm:-mt-14">
+                <Avatar className="w-24 h-24 sm:w-28 sm:h-28 ring-4 ring-card shadow-md shrink-0">
                   {canSeeFullDetails && profile.avatar_url ? <AvatarImage src={profile.avatar_url} /> : null}
                   <AvatarFallback className="bg-gradient-to-br from-primary/15 to-primary/5 text-primary text-2xl font-display font-bold border border-primary/20">
-                    {initials || <User className="w-10 h-10" />}
+                    {initials || <User className="w-9 h-9" />}
                   </AvatarFallback>
                 </Avatar>
 
-                <div className="flex-1 sm:pb-1">
+                <div className="flex-1 min-w-0 pb-1.5">
                   <div className="flex items-baseline gap-2.5 flex-wrap">
-                    <h1 className="font-display text-[28px] sm:text-[32px] font-bold text-foreground tracking-tight leading-tight">
+                    <h1 className="font-display text-2xl sm:text-[28px] font-bold text-foreground tracking-tight leading-tight">
                       {canSeeFullDetails ? profile.name : uniqueId}
                     </h1>
-                    {profile.age && <span className="text-xl text-muted-foreground font-medium">· {profile.age}</span>}
-                  </div>
-                  <div className="flex items-center gap-x-4 gap-y-1.5 mt-2 text-[13px] text-muted-foreground flex-wrap">
-                    {profile.department && (
-                      <span className="flex items-center gap-1.5">
-                        <Briefcase className="w-3.5 h-3.5 text-primary/60" />
-                        {profile.department}{profile.year && ` · ${profile.year}`}
-                      </span>
-                    )}
-                    {profile.university && (
-                      <span className="flex items-center gap-1.5">
-                        <Building2 className="w-3.5 h-3.5 text-primary/60" />
-                        {profile.university}
-                      </span>
-                    )}
-                    {profile.location && (
-                      <span className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-primary/60" />
-                        {profile.location}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-primary/60" />
-                      Joined {new Date(profile.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                    </span>
+                    {profile.age && <span className="text-lg text-muted-foreground font-medium">· {profile.age}</span>}
                   </div>
                 </div>
+              </div>
 
-                {/* Action buttons */}
-                <div className="flex gap-2 sm:ml-auto">
-                  {!isOwnProfile && (
-                    <>
-                      {canChat ? (
-                        <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/8 h-10" onClick={() => navigate(`/chat?user=${userId}`)}>
-                          <MessageCircle className="w-4 h-4 mr-2" /> Message
-                        </Button>
-                      ) : null}
-                      <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 shadow-sm" onClick={handleShowInterest} disabled={sendInterest.isPending || alreadySent}>
-                        <Send className="w-4 h-4 mr-2" />
-                        {alreadySent ? "Interest Sent" : "Send Interest"}
+              {/* Meta row — its own line for breathing room */}
+              <div className="flex items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-muted-foreground flex-wrap">
+                {profile.department && (
+                  <span className="flex items-center gap-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-primary/70" />
+                    {profile.department}{profile.year && ` · ${profile.year}`}
+                  </span>
+                )}
+                {profile.university && (
+                  <span className="flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-primary/70" />
+                    {profile.university}
+                  </span>
+                )}
+                {profile.location && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary/70" />
+                    {profile.location}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-primary/70" />
+                  Joined {new Date(profile.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                </span>
+              </div>
+
+              {/* Action buttons — own row, right aligned with divider */}
+              <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-border/60 justify-end">
+                {!isOwnProfile && (
+                  <>
+                    {canChat ? (
+                      <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/8 h-10" onClick={() => navigate(`/chat?user=${userId}`)}>
+                        <MessageCircle className="w-4 h-4 mr-2" /> Message
                       </Button>
-                    </>
-                  )}
-                  {isOwnProfile && (
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10" asChild>
-                      <Link to="/profile/edit">Edit Profile</Link>
+                    ) : null}
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 shadow-sm" onClick={handleShowInterest} disabled={sendInterest.isPending || alreadySent}>
+                      <Send className="w-4 h-4 mr-2" />
+                      {alreadySent ? "Interest Sent" : "Send Interest"}
+                    </Button>
+                  </>
+                )}
+                {isOwnProfile && (
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10" asChild>
+                    <Link to="/profile/edit">Edit Profile</Link>
                     </Button>
                   )}
                 </div>
