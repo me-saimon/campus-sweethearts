@@ -314,9 +314,8 @@ const UserProfile = () => {
                 {isOwnProfile && (
                   <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10" asChild>
                     <Link to="/profile/edit">Edit Profile</Link>
-                    </Button>
-                  )}
-                </div>
+                  </Button>
+                )}
               </div>
 
               {/* Verified banner */}
