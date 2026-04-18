@@ -211,7 +211,7 @@ const UserProfile = () => {
   ].filter(Boolean) as { id: string; label: string }[];
 
   return (
-    <div className="min-h-screen bg-[hsl(40_30%_98%)]">
+    <div className="min-h-screen bg-gradient-soft">
       <Navbar />
 
       <div className="pt-20 pb-20">

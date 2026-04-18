@@ -8,63 +8,70 @@
 
 @layer base {
   :root {
-    --background: 45 40% 97%;
-    --foreground: 150 30% 12%;
+    /* Soft, warm ivory background — easier on the eyes than pure white */
+    --background: 40 35% 97.5%;
+    --foreground: 158 35% 14%;
 
     --card: 0 0% 100%;
-    --card-foreground: 150 30% 12%;
+    --card-foreground: 158 35% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 150 30% 12%;
+    --popover-foreground: 158 35% 14%;
 
-    --primary: 158 65% 28%;
-    --primary-foreground: 0 0% 100%;
+    /* Softer, slightly desaturated emerald — less harsh, more elegant */
+    --primary: 160 42% 32%;
+    --primary-foreground: 40 40% 98%;
 
-    --secondary: 42 85% 52%;
-    --secondary-foreground: 0 0% 100%;
+    /* Muted, refined gold — champagne-leaning instead of bright */
+    --secondary: 38 62% 56%;
+    --secondary-foreground: 158 40% 12%;
 
-    --muted: 45 25% 93%;
-    --muted-foreground: 150 10% 40%;
+    --muted: 40 25% 94%;
+    --muted-foreground: 158 12% 38%;
 
-    --accent: 42 85% 52%;
-    --accent-foreground: 150 30% 12%;
+    --accent: 38 62% 56%;
+    --accent-foreground: 158 40% 12%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 52%;
+    --destructive-foreground: 40 40% 98%;
 
-    --border: 45 20% 88%;
-    --input: 45 20% 88%;
-    --ring: 158 65% 28%;
+    --border: 40 22% 89%;
+    --input: 40 22% 91%;
+    --ring: 160 42% 32%;
 
     --radius: 1rem;
 
-    /* Islamic palette tokens */
-    --emerald: 158 65% 28%;
-    --emerald-light: 158 40% 88%;
-    --emerald-dark: 158 70% 18%;
-    --gold: 42 85% 52%;
-    --gold-light: 42 60% 88%;
-    --gold-dark: 42 90% 38%;
-    --cream: 45 40% 97%;
-    --sand: 35 30% 90%;
-    --teal: 174 55% 35%;
-    --teal-light: 174 35% 88%;
-    --rose: 350 55% 50%;
-    --rose-light: 350 40% 90%;
-    --coral: 158 65% 28%;
-    --coral-light: 158 40% 88%;
-    --lavender: 270 30% 55%;
-    --lavender-light: 270 25% 92%;
-    --peach: 35 50% 93%;
+    /* Refined Islamic palette tokens */
+    --emerald: 160 42% 32%;
+    --emerald-light: 160 32% 90%;
+    --emerald-dark: 160 50% 18%;
+    --gold: 38 62% 56%;
+    --gold-light: 38 55% 90%;
+    --gold-dark: 36 70% 42%;
+    --cream: 40 35% 97.5%;
+    --sand: 36 28% 91%;
+    --teal: 178 38% 38%;
+    --teal-light: 178 30% 90%;
+    --rose: 350 45% 55%;
+    --rose-light: 350 40% 93%;
+    --coral: 160 42% 32%;
+    --coral-light: 160 32% 90%;
+    --lavender: 268 25% 60%;
+    --lavender-light: 268 22% 94%;
+    --peach: 32 55% 94%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(158 65% 28%), hsl(42 85% 52%), hsl(158 50% 35%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(45 40% 97%));
-    --gradient-accent: linear-gradient(135deg, hsl(158 65% 28%), hsl(158 50% 40%));
-    --gradient-gold: linear-gradient(135deg, hsl(42 85% 52%), hsl(42 90% 42%));
-    --gradient-islamic: linear-gradient(135deg, hsl(158 65% 28%), hsl(158 70% 18%));
-    --shadow-card: 0 8px 30px -8px hsl(158 65% 28% / 0.12);
-    --shadow-hover: 0 16px 40px -8px hsl(158 65% 28% / 0.2);
-    --shadow-glow: 0 0 40px hsl(42 85% 52% / 0.15);
+    /* Softer, more harmonious gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(160 45% 28%) 0%, hsl(160 38% 38%) 55%, hsl(38 60% 58%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(0 0% 100%) 0%, hsl(40 35% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(160 45% 30%), hsl(160 38% 40%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 65% 60%), hsl(36 70% 46%));
+    --gradient-islamic: linear-gradient(135deg, hsl(160 48% 26%), hsl(160 55% 16%));
+    --gradient-soft: linear-gradient(180deg, hsl(40 35% 97.5%) 0%, hsl(40 30% 95%) 100%);
+
+    /* Gentler, more diffused shadows */
+    --shadow-card: 0 4px 18px -8px hsl(160 40% 20% / 0.10), 0 1px 3px hsl(160 40% 20% / 0.04);
+    --shadow-hover: 0 14px 36px -14px hsl(160 45% 22% / 0.18), 0 2px 6px hsl(160 40% 20% / 0.06);
+    --shadow-glow: 0 0 36px hsl(38 65% 58% / 0.18);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -77,33 +84,33 @@
   }
 
   .dark {
-    --background: 30 10% 8%;
-    --foreground: 40 30% 90%;
-    --card: 30 8% 12%;
-    --card-foreground: 40 30% 90%;
-    --popover: 30 8% 12%;
-    --popover-foreground: 40 30% 90%;
-    --primary: 158 65% 35%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 42 85% 52%;
-    --secondary-foreground: 30 10% 8%;
-    --muted: 30 6% 18%;
-    --muted-foreground: 40 15% 60%;
-    --accent: 42 85% 52%;
-    --accent-foreground: 30 10% 8%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 42 30% 20%;
-    --input: 30 8% 18%;
-    --ring: 42 85% 52%;
-    --sidebar-background: 30 10% 10%;
-    --sidebar-foreground: 40 30% 90%;
-    --sidebar-primary: 42 85% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 8% 16%;
-    --sidebar-accent-foreground: 40 30% 90%;
-    --sidebar-border: 42 20% 18%;
-    --sidebar-ring: 42 85% 52%;
+    --background: 158 18% 8%;
+    --foreground: 40 30% 92%;
+    --card: 158 14% 12%;
+    --card-foreground: 40 30% 92%;
+    --popover: 158 14% 12%;
+    --popover-foreground: 40 30% 92%;
+    --primary: 160 45% 42%;
+    --primary-foreground: 158 30% 8%;
+    --secondary: 38 62% 58%;
+    --secondary-foreground: 158 30% 8%;
+    --muted: 158 10% 18%;
+    --muted-foreground: 40 18% 65%;
+    --accent: 38 62% 58%;
+    --accent-foreground: 158 30% 8%;
+    --destructive: 0 62% 38%;
+    --destructive-foreground: 40 30% 95%;
+    --border: 158 14% 20%;
+    --input: 158 14% 18%;
+    --ring: 38 62% 58%;
+    --sidebar-background: 158 18% 10%;
+    --sidebar-foreground: 40 30% 92%;
+    --sidebar-primary: 38 62% 58%;
+    --sidebar-primary-foreground: 158 30% 8%;
+    --sidebar-accent: 158 14% 16%;
+    --sidebar-accent-foreground: 40 30% 92%;
+    --sidebar-border: 158 14% 18%;
+    --sidebar-ring: 38 62% 58%;
   }
 }
 
@@ -151,6 +158,10 @@
 
   .bg-gradient-islamic {
     background: var(--gradient-islamic);
+  }
+
+  .bg-gradient-soft {
+    background: var(--gradient-soft);
   }
 
   .shadow-card {
